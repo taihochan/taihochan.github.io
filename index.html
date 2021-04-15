@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Simple Map</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <style type="text/css">
+        /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+        #map {
+            height: 100%;
+        }
+
+        /* Optional: Makes the sample page fill the window. */
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        button {
+            width: 200px;
+            height: 60px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="map"></div>
+    <h1>台灣鄉鎮JSON</h1>
+    <button onclick="fetchJSON()">Fetch</button>
+    <button onclick="ajaxJqJSON()">Ajax-JQuery</button>
+    <button onclick="ajaxJsJSON()">Ajax-JS</button>
+    <hr>
+    <h1>各區用水量JSON</h1>
+    <button onclick="fetchJSON1()">Fetch</button>
+    <button onclick="ajaxJqJSON1()">Ajax-JQuery</button>
+    <button onclick="ajaxJsJSON1()">Ajax-JS</button>
+    <hr>
+    <h1>各年JSON</h1>
+    <select id="year">
+        <option value="">請選擇查詢年分</option>
+        <option value="104">104年</option>
+        <option value="105">105年</option>
+        <option value="106">106年</option>
+        <option value="107">107年</option>
+        <option value="108">108年</option>
+        <option value="109">109年</option>
+    </select>
+    <select id="month">
+        <option value="">請選擇查詢年月分</option>
+        <option value="1">1月</option>
+        <option value="2">2月</option>
+        <option value="3">3月</option>
+        <option value="4">4月</option>
+        <option value="5">5月</option>
+        <option value="6">6月</option>
+        <option value="7">7月</option>
+        <option value="8">8月</option>
+        <option value="9">9月</option>
+        <option value="10">10月</option>
+        <option value="11">11月</option>
+        <option value="12">12月</option>
+    </select>
+    <hr>
+    <button onclick="startMarker()">產生圖標</button>
+    <button onclick="clearMarker()">清空圖標</button>
+    <!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAYgqj15jzI_Y803wnaoKEcESaTMkH9_84&callback=initMap&libraries=&v=weekly"
+        async></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+
+
+    <script>
+        const labels = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        let labelIndex = 0;
+        let map, marker, marker1, markers = [];
+        let taiwanJson, waterJson, mixJson = [];
+        function initMap() {
+            //座標
+            const CHU = { lat: 24.760074906517676, lng: 120.95293532633988 };
+            const CHU2 = { lat: 24.7603574395392, lng: 120.95522056827772 };
+            const CHU3 = { lat: 24.755778376873447, lng: 120.95576773896974 };
+
+            //圖標
+            //Google Icon : https://developers.google.com/maps/documentation/javascript/custom-markers
+            const image = {
+                url: "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png",
+                scaledSize: new google.maps.Size(50, 50), //設定長寬 
+            }
+            //如果不指定長寬 , 可只設定圖標位址
+            const image1 = "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png"
+
+            //訊息
+            const contentString =
+                '<h1>Hello</h1>' +
+                '<h1>World</h1>';
+            const infowindow = new google.maps.InfoWindow({
+                content: contentString,//內容來源(HTML形式)
+                maxWidth: 200,//內容最大寬度
+            });
+
+            //-----------------設定地圖--------------------------- //
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 15,//縮放大小
+                center: CHU,//地圖中心點位置
+            });
+
+            // ---------------靜態產生圖標方法一------------------- //
+            new google.maps.Marker({
+                position: CHU,//標記位置
+                map,//標記地圖
+                title: "Marker I",//移至圖標所顯示訊息
+                label: {
+                    text: "CHU",
+                    color: "red",
+                    fontSize: "30px",
+                    fontWeight: "bold"
+                },//圖標文字
+                icon: image, //圖標圖片
+                draggable: true, //使圖標可拖動
+                animation: google.maps.Animation.DROP,//動畫設定
+            });
+
+            // ---------------靜態產生圖標方法二------------------- //
+            marker = new google.maps.Marker({
+                position: CHU2,//標記位置
+                title: "Marker II",//移至圖標所顯示訊息
+                icon: image1
+            });
+
+            marker.setMap(map);//標記地圖
+            marker.addListener("click", toggleBounce); //設定點擊事件
+
+            // ---------------動態點擊地圖產生圖標----------------- //
+            google.maps.event.addListener(map, "click", (event) => {
+                addMarker(event.latLng, map);
+            });
+
+            //----------------點擊開啟訊息框----------------------//
+            marker1 = new google.maps.Marker({
+                position: CHU3,
+                title: "Marker III"
+            });
+            marker1.setMap(map);
+            marker1.addListener("click", () => infowindow.open(map, marker1));
+        }
+
+        function addMarker(location, map) {
+            new google.maps.Marker({
+                position: location,
+                label: labels[labelIndex++ % labels.length],
+                map: map,
+            });
+        }
+
+        function toggleBounce() {
+            //如果已設定動畫則取消
+            if (marker.getAnimation() !== null) {
+                marker.setAnimation(null);
+            } else {
+                //如果無動畫則設定
+                marker.setAnimation(google.maps.Animation.BOUNCE);
+            }
+        }
+
+        function clearMarker() {
+            markers.forEach(item => {
+                item.setMap(null)
+            })
+        }
+
+        function startMarker() {
+            //取得畫面的東南西北座標
+            var bounds = map.getBounds();
+            var areaBounds = {
+                north: bounds.getNorthEast().lat(),
+                south: bounds.getSouthWest().lat(),
+                east: bounds.getNorthEast().lng(),
+                west: bounds.getSouthWest().lng()
+            };
+
+            startJSON();
+
+            mixJson.forEach((item, index) => {
+                if (item.Lat > areaBounds.south && item.Lat < areaBounds.north) {
+                    if (item.Lng > areaBounds.west && item.Lng < areaBounds.east) {
+                        let pos = { lat: item.Lat, lng: item.Lng }
+                        setTimeout(function () {
+                            markers.push(
+                                new google.maps.Marker({
+                                    position: pos,
+                                    label: item.TheDailyDomesticConsumptionOfWaterPerPerson,
+                                    map: map,
+                                    animation: google.maps.Animation.DROP
+                                }));
+                        }, index * 150)
+                    }
+                }
+            })
+
+        }
+        const url = "https://raw.githubusercontent.com/taihochan/JsonData/main/%E5%8F%B0%E7%81%A3%E8%A1%8C%E6%94%BF%E5%9C%B0%E5%8D%80.json";
+        const url1 = "https://raw.githubusercontent.com/taihochan/JsonData/main/%E5%8F%B0%E7%81%A3%E8%87%AA%E4%BE%86%E6%B0%B4%E7%94%A8%E9%87%8F.json";
+
+        function startJSON() {
+            let year = document.getElementById('year').value;
+            let month = document.getElementById('month').value;
+            waterJson.TaiwanWaterExchangingData.StatisticofWaterResourcesClass.StatisticofWaterUsageClass.TheConsumptionOfWater.forEach(item => {
+                taiwanJson.forEach(items => {
+                    if (item.Year == year) {
+                        if (item.Month == month) {
+                            if (item.County == items.City) {
+                                if (item.Town == items.District) {
+                                    let temp = Object.assign(item, items);
+                                    mixJson.push(temp)
+                                }
+                            }
+                        }
+                    }
+                })
+            })
+        }
+
+        //Fetch
+        function fetchJSON() {
+            alert('Fetch')
+            fetch(url)
+                .then(response => response.json())
+                .then(json => {
+                    taiwanJson = json;
+                    console.log(taiwanJson)
+                })
+                .catch(ex => {
+                    console.log(ex)
+                })
+        }
+        function fetchJSON1() {
+            alert('Fetch')
+            fetch(url1)
+                .then(response => response.json())
+                .then(json => {
+                    waterJson = json;
+                    console.log(waterJson)
+                })
+                .catch(ex => {
+                    console.log(ex)
+                })
+        }
+        //AJAX - JQuery
+        function ajaxJqJSON() {
+            alert('AJAX - JQuery')
+            $.ajax({
+                type: "Get",
+                url: url,
+                success: function (response) {
+                    taiwanJson = JSON.parse(response);
+                    console.log(taiwanJson)
+
+                }
+            });
+        }
+        function ajaxJqJSON1() {
+            alert('AJAX - JQuery')
+            $.ajax({
+                type: "Get",
+                url: url1,
+                success: function (response) {
+                    waterJson = JSON.parse(response);
+                    console.log(waterJson)
+
+                }
+            });
+        }
+        //AJAX - JS
+        function ajaxJsJSON() {
+            alert('AJAX - JS')
+            let xhr = new XMLHttpRequest();
+            xhr.onload = function () {
+                taiwanJson = JSON.parse(this.response);
+                console.log(taiwanJson)
+            }
+            xhr.open("GET", url);
+            xhr.send();
+        }
+        function ajaxJsJSON1() {
+            alert('AJAX - JS')
+            let xhr = new XMLHttpRequest();
+            xhr.onload = function () {
+                waterJson = JSON.parse(this.response);
+                console.log(waterJson)
+            }
+            xhr.open("GET", url1);
+            xhr.send();
+        }
+
+
+    </script>
+</body>
+
+</html>
