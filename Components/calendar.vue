@@ -1,10 +1,10 @@
 <template>
   <div>
-    <p>{{ a }}</p>
+    <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Facilis fugiat velit debitis, dolor corporis eveniet maxime modi praesentium sint quod laboriosam consequatur harum recusandae distinctio vitae? Consectetur corrupti tempore delectus?</p>
   </div>
 </template>
 <script>
-export default {
+module.exports = {
   data() {
     return {
       a: 1,
