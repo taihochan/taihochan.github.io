@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- 載入Vue框架 -->
+  <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+  <!-- 引用Bootstrap CSS Style -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+</head>
+
+<body>
+  <div id="app">
+    <p>{{year}}</p>
+    <p>{{month}}</p>
+    <p>{{totalDay}}</p>
+    <p>{{nowDay}}</p>
+    <p>{{firstDay}}</p>
+    <p>{{weekendCount}}</p>
+    <table>
+      <template v-for="num in totalDay">
+        <template v-if="num % 7 == 0">
+          <tr></tr>
+
+        </template>
+      </template>
+    </table>
+  </div>
+</body>
+<!-- 引用Boostrap Script -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
+  integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"
+  integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/" crossorigin="anonymous"></script>
+<script>
+  var app = new Vue({
+    //載入位置
+    el: '#app',
+    //資料
+    data: {
+      year: 0,//年
+      month: 0,//月
+      totalDay: 0,//當月天數
+      nowDay: 0,//現在日期
+      firstDay: 0,//第一天是禮拜幾
+      DateArray: [],//存放每個禮拜的日期
+      weekendCount: 0 //總共幾個禮拜
+    },
+    //方法
+    methods: {
+      //取得今天的日期資料
+      getDateNow() {
+        let date = new Date();
+        this.year = date.getFullYear();
+        this.month = date.getMonth() + 1;
+        this.nowDay = date.getDate();
+
+        let getTotalDay = new Date(this.year, this.month, 0);
+        this.totalDay = getTotalDay.getDate();
+
+        let getFirstDay = new Date(this.year, this.month - 1, 1);
+        this.firstDay = getFirstDay.getDay();
+        this.generateArray();
+      },
+      //產生日期陣列
+      generateArray() {
+        this.weekendCount = this.totalDay % 7 == 0 ? this.totalDay / 7 : parseInt(this.totalDay / 7) + 1;
+        for (let i = 1; i <= this.weekendCount; i++) {
+          let weekendArray = new Array();
+          for (let j = (i - 1) * 7 + 1; j <= 7 * i; j++) {
+            if (j > this.totalDay) break;
+
+            if (i < this.firstDay) {
+              this.weekendArray.push('1')
+            } else {
+              this.weekendArray.push('1')
+
+            }
+
+          }
+          console.log(this.weekendArray)
+          this.DateArray.push(this.weekendArray);
+        }
+      }
+
+    },
+    //運算
+    computed: {
+
+    },
+    created() {
+      //載入時先預設取得當天資料
+      this.getDateNow()
+    }
+  })
+</script>
+
+</html>
