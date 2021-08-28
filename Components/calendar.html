@@ -302,7 +302,7 @@
         //初始化
         this.dateArray = []
         //這個月有幾個禮拜
-        this.weekendCount = this.totalDay % 7 == 0 ? this.totalDay / 7 : parseInt(this.totalDay / 7) + 1;
+        this.weekendCount = (this.totalDay + this.firstDay) % 7 == 0 ? (this.totalDay + this.firstDay) / 7 : parseInt((this.totalDay + this.firstDay) / 7) + 1;
         //下一個月是幾年(是否跨年)
         let nextYear = this.month == 12 ? this.year + 1 : this.year;
         //下一個月是幾月(是否跨年)
