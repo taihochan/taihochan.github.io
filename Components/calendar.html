@@ -211,8 +211,8 @@
           <h2 class="text-center p-2 m-0 border-bottom border-dark">備忘錄</h2>
           <div class="note" style="padding: 0 2rem;">
             <p>日　　期　:　西元{{clickData.year}}年{{clickData.month}}月{{clickData.day}}號</p>
-            <p>時　　間　:　<input type="time" name="time" v-model="noteData.time"></p>
-            <p>標　　題　:　<input type="text" name="title" v-model="noteData.title" style="width: 58%;"></p>
+            <p>時　　間　:　<input type="time" name="time" v-model="noteData.time" style="width:8rem;"></p>
+            <p>標　　題　:　<input type="text" name="title" v-model="noteData.title" style="width:8rem;"></p>
             <p>標籤顏色　:　<input type="color" name="color" v-model="noteData.color" value="#ffffff"></p>
             <p class="d-flex">事件內容　:　<textarea name="event" v-model="noteData.event" cols="25" rows="5"></textarea></p>
             <p></p>
