@@ -11,99 +11,219 @@
   <!-- 引用Bootstrap CSS Style -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+  <!-- 引用Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet">
+  <!-- 引用leaflet.js -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
   <style>
+    * {
+      font-family: 'Noto Sans TC', sans-serif;
+    }
+
     tr,
     td,
     th {
       border-width: 1px;
+      background-color: rgb(236, 236, 236);
     }
 
+    /* #map {
+      width: 90vw;
+      height: 100vh;
+    } */
+
     .bg-weekend-th {
-      background-color: rgb(167, 107, 107);
+      color: rgb(92, 9, 9);
     }
 
     .bg-normal-th {
-      background-color: rgb(71, 121, 121);
+      color: rgb(16, 14, 94);
     }
 
     .bg-weekend-td {
-      background-color: rgb(199, 129, 129);
+      color: rgb(199, 125, 125);
     }
 
     .bg-normal-td {
-      background-color: rgb(86, 151, 151);
+      color: rgb(84, 155, 155);
     }
 
     .bg-anotherMonth {
-      background-color: rgb(116, 113, 113);
+      color: rgb(116, 113, 113);
     }
 
     .clickLeft {
-      position: absolute;
-      left: 5%;
+      display: block;
+      width: 15px;
+      height: 15px;
+      border-top: 15px solid transparent;
+      border-left: 15px solid transparent;
+      border-bottom: 15px solid transparent;
+      border-right: 15px solid #666666;
+      margin-right: 2rem;
     }
 
     .clickRight {
-      position: absolute;
-      right: 5%;
+      display: block;
+      width: 15px;
+      height: 15px;
+      border-top: 15px solid transparent;
+      border-left: 15px solid #666666;
+      border-bottom: 15px solid transparent;
+      border-right: 15px solid transparent;
+      margin-left: 2rem;
     }
 
-    .clickUp {
-      position: absolute;
-      top: 5%;
+    .clickLeft,
+    .clickRight:hover {
+      cursor: pointer;
     }
 
-    .clickDown {
+    #inputYear {
+      width: 4em;
+      text-align: center;
+    }
+
+    .note p {
+      width: 70%;
+      margin: 1rem auto;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .event {
+      position: relative;
+    }
+
+    .eventArea:hover {
+      overflow: visible !important;
+    }
+
+    .event:hover {
+      cursor: pointer;
+    }
+
+    .event:hover::after {
       position: absolute;
-      bottom: 5%;
+      left: 15px;
+      top: 15px;
+      padding: 5px;
+      background-color: #0095ffbb;
+      border-radius: 5px;
+      color: #fff;
+      content: attr(eventContent);
+      z-index: 2;
     }
   </style>
 </head>
 
 <body>
-  <div id="app" style="height: 100vh;">
+  <!-- <div id="map"></div> -->
+
+  <div id="app">
+    <div class="title">
+      <h1 class="text-center"><input id="inputYear" type="number" v-model="year" max="9999"> 行事曆</h1>
+    </div>
     <div class="calendar h-100 d-flex justify-content-center align-items-center text-center position-relative">
-      <span class="clickLeft" @click="clickLeft">左</span>
-      <span class="clickRight" @click="clickRight">右</span>
-      <span class="clickUp" @click="clickUp">上</span>
-      <span class="clickDown" @click="clickDown">下</span>
-      <table class="w-75 h-75" style="border:3px #cccccc solid;" cellpadding="10" border="1">
+
+      <table style="border:3px #cccccc solid;height: 90vh;width: 99vw;table-layout : fixed;" cellpadding="10"
+        border="1">
         <tr>
-          <th class="text-center" colspan="7" style="background-color: antiquewhite;">西元{{year}}年{{month}}月</th>
+          <th class="text-cneter p-0" colspan="7" style="background-color: antiquewhite;font-size: 2rem;">
+            <div class="d-flex justify-content-center align-items-center">
+              <span class="clickLeft" @click="clickLeft"></span>
+              {{month}}月
+              <span class="clickRight" @click="clickRight"></span>
+            </div>
+          </th>
         </tr>
         <tr>
-          <th class="bg-weekend-th">禮拜日</th>
-          <th class="bg-normal-th">禮拜一</th>
-          <th class="bg-normal-th">禮拜二</th>
-          <th class="bg-normal-th">禮拜三</th>
-          <th class="bg-normal-th">禮拜四</th>
-          <th class="bg-normal-th">禮拜五</th>
-          <th class="bg-weekend-th">禮拜六</th>
+          <th class="bg-weekend-th">日</th>
+          <th class="bg-normal-th">一</th>
+          <th class="bg-normal-th">二</th>
+          <th class="bg-normal-th">三</th>
+          <th class="bg-normal-th">四</th>
+          <th class="bg-normal-th">五</th>
+          <th class="bg-weekend-th">六</th>
         </tr>
         <template v-for="(items, index) in dateArray">
           <tr>
             <template v-for="item in items">
-              <td v-if="item.isWeekend&&item.thisMonth" class="bg-weekend-td" :id="item.date" @click="clickDate">
-                <div>
+              <td v-if="item.isWeekend&&item.thisMonth" class="bg-weekend-td" :id="item.date" @click="clickDate(item)">
+                <div v-if="!item.isNote">
                   <p>{{item.day}}</p>
                 </div>
-              </td>
-              <td v-else-if="!item.isWeekend&&item.thisMonth" class="bg-normal-td" :id="item.date" @click="clickDate">
-                <div>
-                  <p>{{item.day}}</p>
+                <div v-else>
+                  <p class="border-bottom">{{item.day}}</p>
+                  <div class="d-flex flex-wrap overflow-auto eventArea">
+                    <template v-for="event in item.noteEvent">
+                      <span class="event" :style="{ backgroundColor: event.color}" :eventContent="event.event"
+                        style=" padding:0 6px; border-radius: 7px" @click="clickEvent(event)">
+                        {{ event.title }}
+                      </span>
+                    </template>
+                  </div>
                 </div>
               </td>
-              <td v-else class="bg-anotherMonth" :id="item.date" @click="clickDate">
-                <div>
+              <td v-else-if="!item.isWeekend&&item.thisMonth" class="bg-normal-td" :id="item.date"
+                @click="clickDate(item)">
+                <div v-if="!item.isNote">
                   <p>{{item.day}}</p>
+                </div>
+                <div v-else>
+                  <p class="border-bottom">{{item.day}}</p>
+                  <div class="d-flex flex-wrap overflow-auto eventArea">
+                    <template v-for="event in item.noteEvent">
+                      <span class="event" :style="{ backgroundColor: event.color}" :eventContent="event.event"
+                        style=" padding:0 6px; border-radius: 7px" @click="clickEvent(event)">
+                        {{ event.title }}
+                      </span>
+                    </template>
+                  </div>
+                </div>
+              </td>
+              <td v-else class="bg-anotherMonth" :id="item.date" @click="clickDate(item)">
+                <div v-if="!item.isNote">
+                  <p>{{item.day}}</p>
+                </div>
+                <div v-else>
+                  <p class="border-bottom">{{item.day}}</p>
+                  <div class="d-flex flex-wrap overflow-auto eventArea">
+                    <template v-for="event in item.noteEvent">
+                      <span class="event" :style="{ backgroundColor: event.color}" :eventContent="event.event"
+                        style=" padding:0 6px; border-radius: 7px" @click="clickEvent(event)">
+                        {{ event.title }}
+                      </span>
+                    </template>
+                  </div>
                 </div>
               </td>
             </template>
           </tr>
         </template>
       </table>
-      <div class="eventModal position-absolute" v-show="showModal"
-        style="width: 300px;height: 300px; background-color: black;"><button @click="closeModal">關閉</button></div>
+      <div v-if="showModal" class="ModalArea position-absolute d-flex justify-content-center align-items-center"
+        style="width:99vw; height:90vh">
+        <div class="eventModal border border-1 border-dark"
+          style="width: 30%;height: 55%; background-color: rgb(217 221 196);overflow: auto;">
+          <h2 class="text-center p-2 m-0 border-bottom border-dark">備忘錄</h2>
+          <div class="note">
+            <p>日　　期　:　西元{{clickData.year}}年{{clickData.month}}月{{clickData.day}}號</p>
+            <p>時　　間　:　<input type="time" name="time" v-model="noteData.time"></p>
+            <p>標　　題　:　<input type="text" name="title" v-model="noteData.title"></p>
+            <p>標籤顏色　:　<input type="color" name="color" v-model="noteData.color" value="#ffffff"></p>
+            <p class="d-flex">事件內容　:　<textarea name="event" v-model="noteData.event" cols="25" rows="5"></textarea></p>
+            <p></p>
+          </div>
+          <div class="btnArea d-flex justify-content-center">
+            <button class="mt-1 mb-2 me-1" @click="saveData">儲存</button>
+            <button class="mt-1 mb-2 ms-1" @click="closeModal">關閉</button>
+            <button class="mt-1 mb-2 ms-1" @click="clickDelete" v-show="showDelete">刪除</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </body>
@@ -112,7 +232,10 @@
   integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"
   integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/" crossorigin="anonymous"></script>
+<!-- 引用leaflet.js -->
+<!-- <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script> -->
 <script>
+  // var clickMap = [];
   var app = new Vue({
     //載入位置
     el: '#app',
@@ -123,9 +246,43 @@
       totalDay: 0,//當月天數
       nowDay: 0,//現在日期
       firstDay: 0,//第一天是禮拜幾
-      dateArray: [],//存放每個禮拜的日期
+      dateArray: {
+        date: null,
+        year: 0,
+        month: 0,
+        day: 0,
+        thisMonth: false,
+        isWeekend: false,
+        isNote: false,
+        noteEvent: {
+          id: 0,
+          date: null,
+          year: 0,
+          month: 0,
+          day: 0,
+          title: "",
+          color: "#000000",
+          time: null,
+          event: ""
+        }
+      },//存放每個禮拜的日期
       weekendCount: 0, //總共幾個禮拜
-      showModal: false //彈跳視窗預設關閉(false)
+      showModal: false, //彈跳視窗預設關閉(false)
+      showDelete: false,//顯示是否可以刪除備忘事項
+      clickData: [],//點擊日期的資料
+      noteArray: [],//整個備忘的陣列
+      noteData: {
+        id: null,
+        date: null,
+        year: 0,
+        month: 0,
+        day: 0,
+        title: "",
+        color: "#000000",
+        time: null,
+        event: ""
+      },//單筆新增修改備忘錄內容
+      resetNote: []//清空單筆內容
     },
     //方法
     methods: {
@@ -137,6 +294,8 @@
         let getFirstDay = new Date(this.year, this.month - 1, 1);
         this.firstDay = getFirstDay.getDay();
         this.generateArray();
+        this.getLocalStorege()
+
       },
       //產生日期陣列
       generateArray() {
@@ -166,26 +325,84 @@
 
             if (j <= this.firstDay) {
               //上個月的部分
-              weekendArray.push({ date: `${lastYear}${lastMonth.toString().padStart(2, 0)}${(lastTotalDay - this.firstDay + j).toString().padStart(2, 0)}`, day: lastTotalDay - this.firstDay + j, thisMonth: false, isWeekend: isWeekend })
+              weekendArray.push({ date: `${lastYear}${lastMonth.toString().padStart(2, 0)}${(lastTotalDay - this.firstDay + j).toString().padStart(2, 0)}`, year: lastYear, month: lastMonth, day: lastTotalDay - this.firstDay + j, thisMonth: false, isWeekend: isWeekend, isNote: false, noteEvent: [] })
             } else if (j > this.totalDay + this.firstDay) {
               //下個月的部分
-              weekendArray.push({ date: `${nextYear}${nextMonth.toString().padStart(2, 0)}${(j - this.totalDay - this.firstDay).toString().padStart(2, 0)}`, day: j - this.totalDay - this.firstDay, thisMonth: false, isWeekend: isWeekend })
+              weekendArray.push({ date: `${nextYear}${nextMonth.toString().padStart(2, 0)}${(j - this.totalDay - this.firstDay).toString().padStart(2, 0)}`, year: nextYear, month: nextMonth, day: j - this.totalDay - this.firstDay, thisMonth: false, isWeekend: isWeekend, isNote: false, noteEvent: [] })
             }
             else {
               //這個月的部分
-              weekendArray.push({ date: `${this.year}${this.month.toString().padStart(2, 0)}${(j - this.firstDay).toString().padStart(2, 0)}`, day: j - this.firstDay, thisMonth: true, isWeekend: isWeekend })
+              weekendArray.push({ date: `${this.year}${this.month.toString().padStart(2, 0)}${(j - this.firstDay).toString().padStart(2, 0)}`, year: this.year, month: this.month, day: j - this.firstDay, thisMonth: true, isWeekend: isWeekend, isNote: false, noteEvent: [] })
             }
           }
           this.dateArray.push(weekendArray);
         }
       },
       //點擊日期
-      clickDate() {
+      clickDate(item) {
+        this.clickData = item;
+        this.noteData.date = item.date;
+        this.noteData.year = item.year;
+        this.noteData.month = item.month;
+        this.noteData.day = item.day;
         this.showModal = true
+      },
+      //點擊備忘事項
+      clickEvent(event) {
+        this.noteData = { ...event }
+        this.showDelete = true;
+      },
+      //刪除該筆備忘
+      clickDelete() {
+        this.noteArray.splice(this.noteData.id, 1)
+        this.noteArray.forEach((item, index) => {
+          item.id = index
+        })
+        this.dateArray.forEach(items => {
+          items.forEach(item => {
+            if (this.noteArray.some(s => s.date == item.date)) {
+              item.noteEvent = this.noteArray.filter(f => f.date == item.date)
+            }
+          })
+        })
+        localStorage.setItem(`${this.noteData.year}${this.noteData.month.toString().padStart(2, 0)}`, JSON.stringify(this.noteArray))
+        this.noteData = { ...this.resetNote }
+        this.showDelete = false
+        this.showModal = false
       },
       //關閉彈跳視窗
       closeModal() {
+        this.noteData = { ...this.resetNote }
         this.showModal = false
+      },
+      //儲存
+      saveData() {
+        if (this.showDelete) {
+          this.noteArray[this.noteData.id] = { ...this.noteData }
+          this.dateArray.forEach(items => {
+            items.forEach(item => {
+              if (this.noteArray.some(s => s.date == item.date)) {
+                item.noteEvent = this.noteArray.filter(f => f.date == item.date)
+              }
+            })
+          })
+        } else {
+          this.noteData.id = this.noteArray.length;
+          this.dateArray.forEach(items => {
+            items.forEach(item => {
+              if (item.date == this.noteData.date) {
+                item.isNote = true;
+                let temp = { ...this.noteData }
+                item.noteEvent.push(temp)
+                this.noteArray.push(temp)
+              }
+            })
+          })
+        }
+
+        localStorage.setItem(`${this.noteData.year}${this.noteData.month.toString().padStart(2, 0)}`, JSON.stringify(this.noteArray))
+        this.noteData = { ...this.resetNote }
+        this.showModal = false;
       },
       //上個月
       clickLeft() {
@@ -207,15 +424,44 @@
         }
         this.getDate();
       },
-      //去年
-      clickUp() {
-        this.year--
-        this.getDate();
-      },
-      //今年
-      clickDown() {
-        this.year++
-        this.getDate();
+      getLocalStorege() {
+        let lastYear, lastMonth
+        let nextYear, nextMonth
+        if (this.month == 1) {
+          lastYear = this.year - 1
+          lastMonth = 12
+        } else {
+          lastYear = this.year
+          lastMonth = this.month - 1
+        }
+        if (this.month == 12) {
+          nextYear = this.year + 1
+          nextMonth = 1
+        } else {
+          nextYear = this.year
+          nextMonth = this.month + 1
+        }
+
+        let lastTemp = JSON.parse(localStorage.getItem(`${lastYear}${lastMonth.toString().padStart(2, 0)}`))
+        let temp = JSON.parse(localStorage.getItem(`${this.year}${this.month.toString().padStart(2, 0)}`))
+        let nextTemp = JSON.parse(localStorage.getItem(`${nextYear}${nextMonth.toString().padStart(2, 0)}`))
+
+        lastTemp = lastTemp != null ? lastTemp : [];
+        temp = temp != null ? temp : [];
+        nextTemp = nextTemp != null ? nextTemp : [];
+
+        let temps = Object.assign(lastTemp, temp, nextTemp)
+        this.dateArray.forEach(items => {
+          items.forEach(item => {
+            let find = temps.some(f => f.date == item.date);
+            if (find) {
+              let notes = temps.filter(f => f.date == item.date);
+              item.noteEvent = notes;
+            }
+            item.isNote = find;
+          })
+        })
+        this.noteArray = Array.from(temps)
       }
     },
     //運算
@@ -224,6 +470,11 @@
     },
     //監聽
     watch: {
+      year: function (value) {
+        if (value > 9999) value = 9999
+        this.year = parseInt(value)
+        this.getDate();
+      }
     },
     created() {
       //載入時先預設取得當天資料
@@ -232,8 +483,54 @@
       this.month = date.getMonth() + 1;
       this.nowDay = date.getDate();
       this.getDate()
+      this.resetNote = { ...this.noteData }
     }
   })
+
+  //Leaflet JavaScript
+  // var map;
+  // var myLocation;
+  // map = L.map('map');
+
+  // L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  //   attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>         contributors'
+  // }).addTo(map);
+
+  // // setView 可以設定地圖座標
+  // // watch 則是持續監聽使用者的位置
+  // map.locate({ setView: true, watch: true });
+
+  // if (clickMap.length > 0) {
+  //   var marker = L.marker([clickMap.lat, clickMap.lng]);
+  //   marker.addTo(map);
+  // }
+  // // 成功監聽到使用者的位置時觸發
+  // map.on('locationfound', onLocationFound);
+  // // 失敗時觸發
+  // map.on('locationerror', onLocationError);
+
+
+  // function onLocationFound(e) {
+  //   myLocation = e.latlng // 使用者位置
+  //   var marker = L.marker([myLocation.lat, myLocation.lng]);
+  //   marker.addTo(map);
+  //   // var bookstore = L.latLng(25.129836537742896, 121.74017250433087) // 書店
+  //   // console.log(myLocation.distanceTo(bookstore)) // 計算使用者和書店的距離
+  // }
+
+  // function onLocationError(e) {
+  //   alert("定位失敗")
+  // }
+
+  // // 點擊區域的經緯度
+  // function onMapClick(e) {
+  //   clickMap = e.latlng
+  //   var marker = L.marker([clickMap.lat, clickMap.lng]);
+  //   marker.addTo(map);
+  //   console.log(myLocation.distanceTo(clickMap))
+  // }
+
+  // map.on('click', onMapClick);
 </script>
 
 </html>
