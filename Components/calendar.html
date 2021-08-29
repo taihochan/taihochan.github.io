@@ -394,17 +394,28 @@
       },
       //刪除該筆備忘
       clickDelete() {
+        let tempDate = this.noteData.date;
         this.noteArray.splice(this.noteData.id, 1)
         this.noteArray.forEach((item, index) => {
           item.id = index
         })
-        this.dateArray.forEach(items => {
-          items.forEach(item => {
-            if (this.noteArray.some(s => s.date == item.date)) {
-              item.noteEvent = this.noteArray.filter(f => f.date == item.date)
-            }
+        if (this.noteArray.length == 0) {
+          this.dateArray.forEach(items => {
+            items.forEach(item => {
+              if (item.date == tempDate) {
+                item.noteEvent = [];
+              }
+            })
           })
-        })
+        } else {
+          this.dateArray.forEach(items => {
+            items.forEach(item => {
+              if (this.noteArray.some(s => s.date == item.date)) {
+                item.noteEvent = this.noteArray.filter(f => f.date == item.date)
+              }
+            })
+          })
+        }
         localStorage.setItem(`${this.noteData.year}${this.noteData.month.toString().padStart(2, 0)}`, JSON.stringify(this.noteArray))
         this.noteData = { ...this.resetNote }
         this.showDelete = false
