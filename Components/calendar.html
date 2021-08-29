@@ -158,7 +158,7 @@
                   <p class="border-bottom">{{item.day}}</p>
                   <div class="d-flex flex-wrap overflow-auto eventArea">
                     <template v-for="event in item.noteEvent">
-                      <span class="event" :style="{ backgroundColor: event.color}" :eventContent="event.event"
+                      <span class="event border" :style="{ backgroundColor: event.color}" :eventContent="event.event"
                         style=" padding:0 6px; border-radius: 7px" @click="clickEvent(event)">
                         {{ event.title }}
                       </span>
@@ -175,7 +175,7 @@
                   <p class="border-bottom">{{item.day}}</p>
                   <div class="d-flex flex-wrap overflow-auto eventArea">
                     <template v-for="event in item.noteEvent">
-                      <span class="event" :style="{ backgroundColor: event.color}" :eventContent="event.event"
+                      <span class="event border" :style="{ backgroundColor: event.color}" :eventContent="event.event"
                         style=" padding:0 6px; border-radius: 7px" @click="clickEvent(event)">
                         {{ event.title }}
                       </span>
@@ -192,7 +192,7 @@
                   <p class="border-bottom">{{item.day}}</p>
                   <div class="d-flex flex-wrap overflow-auto eventArea">
                     <template v-for="event in item.noteEvent">
-                      <span class="event" :style="{ backgroundColor: event.color}" :eventContent="event.event"
+                      <span class="event border" :style="{ backgroundColor: event.color}" :eventContent="event.event"
                         style=" padding:0 6px; border-radius: 7px" @click="clickEvent(event)">
                         {{ event.title }}
                       </span>
