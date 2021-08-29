@@ -57,10 +57,7 @@
       margin-left: 2rem;
     }
 
-    .clickLeft,
-    .clickRight:hover {
-      cursor: pointer;
-    }
+
 
     #inputYear {
       width: 4em;
@@ -79,24 +76,59 @@
       cursor: pointer;
     }
 
-    .eventArea:hover {
-      overflow: visible !important;
-    }
-
-    .event:hover::after {
-      position: absolute;
-      left: 15px;
-      top: 15px;
-      padding: 5px;
-      background-color: #0095ffbb;
-      border-radius: 5px;
-      color: #fff;
-      content: attr(eventContent);
-      z-index: 2;
-    }
 
     .settingIcon {
       cursor: pointer;
+    }
+
+    /* 平板以下 */
+    @media screen and (max-width:1024px) {
+
+      .clickLeft,
+      .clickRight:active {
+        cursor: pointer;
+      }
+
+      .eventArea:active {
+        overflow: visible !important;
+      }
+
+      .event:active::after {
+        position: absolute;
+        left: 15px;
+        top: 15px;
+        padding: 5px;
+        background-color: #0095ffbb;
+        border-radius: 5px;
+        color: #fff;
+        content: attr(eventContent);
+        z-index: 2;
+      }
+    }
+
+    /* 電腦 */
+    @media screen and (min-width:1025px) {
+
+      .clickLeft,
+      .clickRight:hover {
+        cursor: pointer;
+      }
+
+      .eventArea:hover {
+        overflow: visible !important;
+      }
+
+      .event:hover::after {
+        position: absolute;
+        left: 15px;
+        top: 15px;
+        padding: 5px;
+        background-color: #0095ffbb;
+        border-radius: 5px;
+        color: #fff;
+        content: attr(eventContent);
+        z-index: 2;
+      }
     }
   </style>
 </head>
