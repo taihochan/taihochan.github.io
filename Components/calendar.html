@@ -65,6 +65,10 @@
       background-color: #ffffff;
     }
 
+    .isToday {
+      background-color: rgb(197, 61, 61) !important;
+      border: 4px solid white !important;
+    }
 
     #inputYear {
       width: 4em;
@@ -175,7 +179,7 @@
               <td v-if="item.isWeekend&&item.thisMonth" :id="item.date" @click="clickDate(item)"
                 :style="{backgroundImage:createBackgroundString(settingData.weekendBg1, settingData.weekendBg2),color: settingData.weekendColor}">
                 <div v-if="!item.isNote">
-                  <p>{{item.day}}</p>
+                  <p :class="{isToday:item.day == nowDay}">{{item.day}}</p>
                 </div>
                 <div v-else>
                   <p class="border-bottom">{{item.day}}</p>
@@ -192,7 +196,7 @@
               <td v-else-if="!item.isWeekend&&item.thisMonth" :id="item.date" @click="clickDate(item)"
                 :style="{backgroundImage:createBackgroundString(settingData.weekBg1, settingData.weekBg2),color: settingData.weekColor}">
                 <div v-if="!item.isNote">
-                  <p>{{item.day}}</p>
+                  <p :class="{isToday:item.day == nowDay}">{{item.day}}</p>
                 </div>
                 <div v-else>
                   <p class="border-bottom">{{item.day}}</p>
