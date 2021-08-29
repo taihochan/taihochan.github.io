@@ -82,29 +82,7 @@
     }
 
     /* 平板以下 */
-    @media screen and (max-width:1024px) {
-
-      .clickLeft,
-      .clickRight:active {
-        cursor: pointer;
-      }
-
-      .eventArea:active {
-        overflow: visible !important;
-      }
-
-      .event:active::after {
-        position: absolute;
-        left: 15px;
-        top: 15px;
-        padding: 5px;
-        background-color: #0095ffbb;
-        border-radius: 5px;
-        color: #fff;
-        content: attr(eventContent);
-        z-index: 2;
-      }
-    }
+    @media screen and (max-width:1024px) {}
 
     /* 電腦 */
     @media screen and (min-width:1025px) {
