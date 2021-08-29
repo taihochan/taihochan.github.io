@@ -17,6 +17,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet">
   <!-- 引用leaflet.js -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+  <!-- 引用FontAwesome -->
+  <script src="https://kit.fontawesome.com/aaacc8f3a5.js" crossorigin="anonymous"></script>
   <style>
     * {
       font-family: 'Noto Sans TC', sans-serif;
@@ -26,33 +28,12 @@
     td,
     th {
       border-width: 1px;
-      background-color: rgb(236, 236, 236);
     }
 
     /* #map {
       width: 90vw;
       height: 100vh;
     } */
-
-    .bg-weekend-th {
-      color: rgb(92, 9, 9);
-    }
-
-    .bg-normal-th {
-      color: rgb(16, 14, 94);
-    }
-
-    .bg-weekend-td {
-      color: rgb(199, 125, 125);
-    }
-
-    .bg-normal-td {
-      color: rgb(84, 155, 155);
-    }
-
-    .bg-anotherMonth {
-      color: rgb(116, 113, 113);
-    }
 
     .clickLeft {
       display: block;
@@ -95,14 +76,11 @@
 
     .event {
       position: relative;
+      cursor: pointer;
     }
 
     .eventArea:hover {
       overflow: visible !important;
-    }
-
-    .event:hover {
-      cursor: pointer;
     }
 
     .event:hover::after {
@@ -116,6 +94,10 @@
       content: attr(eventContent);
       z-index: 2;
     }
+
+    .settingIcon {
+      cursor: pointer;
+    }
   </style>
 </head>
 
@@ -123,35 +105,42 @@
   <!-- <div id="map"></div> -->
 
   <div id="app">
-    <div class="title">
-      <h1 class="text-center"><input id="inputYear" type="number" v-model="year" max="9999"> 行事曆</h1>
+    <div class="title position-relative m-0 py-2" :style="{backgroundColor:settingData.titleYearBg}">
+      <h1 class="text-center" :style="{color: settingData.titleYearColor,backgroundColor:settingData.titleYearBg}">
+        <input id="inputYear" type="number" v-model="year" max="9999" style="border: 0;border-bottom: 4px groove;"
+          :style="{color: settingData.titleYearColor,backgroundColor:settingData.titleYearBg}"> 行事曆
+      </h1>
+      <i class="fas fa-sliders-h position-absolute settingIcon"
+        style="font-size: 1.5rem; top: 0.3rem; right: 1rem ;color: gray" @click="clickSetting"></i>
     </div>
     <div class="calendar h-100 d-flex justify-content-center align-items-center text-center position-relative">
 
       <table style="border:3px #cccccc solid;height: 90vh;width: 99vw;table-layout : fixed;" cellpadding="10"
         border="1">
         <tr>
-          <th class="text-cneter p-0" colspan="7" style="background-color: antiquewhite;font-size: 2rem;">
+          <th class="text-cneter p-0" colspan="7" style="font-size: 2rem;"
+            :style="{backgroundColor:settingData.titleMonthBg}">
             <div class="d-flex justify-content-center align-items-center">
               <span class="clickLeft" @click="clickLeft"></span>
-              {{month}}月
+              <p style="white-space: nowrap;" :style="{color: settingData.titleMonthColor}">{{month}}月</p>
               <span class="clickRight" @click="clickRight"></span>
             </div>
           </th>
         </tr>
         <tr>
-          <th class="bg-weekend-th">日</th>
-          <th class="bg-normal-th">一</th>
-          <th class="bg-normal-th">二</th>
-          <th class="bg-normal-th">三</th>
-          <th class="bg-normal-th">四</th>
-          <th class="bg-normal-th">五</th>
-          <th class="bg-weekend-th">六</th>
+          <th :style="{backgroundColor:settingData.weekendTitleBg,color: settingData.weekendTitleColor}">日</th>
+          <th :style="{backgroundColor: settingData.weekTitleBg, color: settingData.weekTitleColor}">一</th>
+          <th :style="{backgroundColor: settingData.weekTitleBg, color: settingData.weekTitleColor}">二</th>
+          <th :style="{backgroundColor: settingData.weekTitleBg, color: settingData.weekTitleColor}">三</th>
+          <th :style="{backgroundColor: settingData.weekTitleBg, color: settingData.weekTitleColor}">四</th>
+          <th :style="{backgroundColor: settingData.weekTitleBg, color: settingData.weekTitleColor}">五</th>
+          <th :style="{backgroundColor:settingData.weekendTitleBg,color: settingData.weekendTitleColor}">六</th>
         </tr>
         <template v-for="(items, index) in dateArray">
           <tr>
             <template v-for="item in items">
-              <td v-if="item.isWeekend&&item.thisMonth" class="bg-weekend-td" :id="item.date" @click="clickDate(item)">
+              <td v-if="item.isWeekend&&item.thisMonth" :id="item.date" @click="clickDate(item)"
+                :style="{backgroundColor:settingData.weekendBg,color: settingData.weekendColor}">
                 <div v-if="!item.isNote">
                   <p>{{item.day}}</p>
                 </div>
@@ -167,8 +156,8 @@
                   </div>
                 </div>
               </td>
-              <td v-else-if="!item.isWeekend&&item.thisMonth" class="bg-normal-td" :id="item.date"
-                @click="clickDate(item)">
+              <td v-else-if="!item.isWeekend&&item.thisMonth" :id="item.date" @click="clickDate(item)"
+                :style="{backgroundColor:settingData.weekBg,color: settingData.weekColor}">
                 <div v-if="!item.isNote">
                   <p>{{item.day}}</p>
                 </div>
@@ -184,7 +173,8 @@
                   </div>
                 </div>
               </td>
-              <td v-else class="bg-anotherMonth" :id="item.date" @click="clickDate(item)">
+              <td v-else :id="item.date" @click="clickDate(item)"
+                :style="{backgroundColor:settingData.notThisMonthBg,color: settingData.notThisMonthColor}">
                 <div v-if="!item.isNote">
                   <p>{{item.day}}</p>
                 </div>
@@ -204,10 +194,10 @@
           </tr>
         </template>
       </table>
-      <div v-if="showModal" class="ModalArea position-absolute d-flex justify-content-center align-items-center overflow-auto"
+      <div v-if="showModal"
+        class="modalArea position-absolute d-flex justify-content-center align-items-center overflow-auto"
         style="width:99vw; height:90vh">
-        <div class="eventModal border border-1 border-dark"
-          style="background-color: rgb(217 221 196);overflow: auto;">
+        <div class="eventModal border border-1 border-dark" style="background-color: rgb(217 221 196);overflow: auto;">
           <h2 class="text-center p-2 m-0 border-bottom border-dark">備忘錄</h2>
           <div class="note" style="padding: 0 2rem;">
             <p>日　　期　:　西元{{clickData.year}}年{{clickData.month}}月{{clickData.day}}號</p>
@@ -221,6 +211,28 @@
             <button class="mt-1 mb-2 me-1" @click="saveData">儲存</button>
             <button class="mt-1 mb-2 ms-1" @click="closeModal">關閉</button>
             <button class="mt-1 mb-2 ms-1" @click="clickDelete" v-show="showDelete">刪除</button>
+          </div>
+        </div>
+      </div>
+      <div v-if="showSetting" class="settingArea position-absolute top-0" style="width: 99vw;height:100vh;">
+        <div class="settingModal position-absolute top-0 end-0 text-end p-2" style="background-color: #6d767f;">
+          <p>年份字體顏色　:　<input type="color" name="titleYearColor" v-model="settingData.titleYearColor"></p>
+          <p>年份背景顏色　:　<input type="color" name="titleYearBg" v-model="settingData.titleYearBg"></p>
+          <p>月份字體顏色:　<input type="color" name="titleMonthColor" v-model="settingData.titleMonthColor"></p>
+          <p>月份背景顏色:　<input type="color" name="titleMonthBg" v-model="settingData.titleMonthBg"></p>
+          <p>表格標題(周末)顏色:　<input type="color" name="weekendTitleColor" v-model="settingData.weekendTitleColor"></p>
+          <p>表格標題(周末)背景顏色:　<input type="color" name="weekendTitleBg" v-model="settingData.weekendTitleBg"></p>
+          <p>表格標題(平日)顏色:　<input type="color" name="weekTitleColor" v-model="settingData.weekTitleColor"></p>
+          <p>表格標題(平日)背景顏色:　<input type="color" name="weekTitleBg" v-model="settingData.weekTitleBg"></p>
+          <p>表格內容(周末)顏色:　<input type="color" name="weekendColor" v-model="settingData.weekendColor"></p>
+          <p>表格內容(周末)背景顏色:　<input type="color" name="weekendBg" v-model="settingData.weekendBg"></p>
+          <p>表格內容(平日)顏色:　<input type="color" name="weekColor" v-model="settingData.weekColor"></p>
+          <p>表格內容(平日)背景顏色:　<input type="color" name="weekBg" v-model="settingData.weekBg"></p>
+          <p>表格內容(非當月)顏色:　<input type="color" name="notThisMonthColor" v-model="settingData.notThisMonthColor"></p>
+          <p>表格內容(非當月)背景顏色:　<input type="color" name="notThisMonthBg" v-model="settingData.notThisMonthBg"></p>
+          <div class="settingBtn text-center">
+            <button @click="settingSave">儲存</button>
+            <button @click="settingCancel">取消</button>
           </div>
         </div>
       </div>
@@ -282,7 +294,25 @@
         time: null,
         event: ""
       },//單筆新增修改備忘錄內容
-      resetNote: []//清空單筆內容
+      resetNote: [],//清空單筆內容
+      showSetting: false,//顯示設定
+      settingData: {
+        titleYearColor: '#000000',//年份字體顏色
+        titleYearBg: '#ffffff',//年份字體顏色
+        titleMonthColor: '#000000',//月份字體顏色
+        titleMonthBg: '#faebd7',//月份字體顏色
+        weekendTitleColor: '#5c0909',//表格標題(周末)顏色
+        weekendTitleBg: '#ececec',//表格標題(周末)背景顏色
+        weekTitleColor: '#100e5e',//表格標題(平日)顏色
+        weekTitleBg: '#ececec',//表格標題(平日)背景顏色
+        weekendColor: '#c77d7d',//表格內容(周末)顏色
+        weekendBg: '#ececec',//表格內容(周末)背景顏色
+        weekColor: '#549b9b',//表格內容(平日)顏色
+        weekBg: '#ececec',//表格內容(平日)背景顏色
+        notThisMonthColor: '#747171',//表格內容(非當月)顏色
+        notThisMonthBg: '#ececec',//表格內容(非當月)背景顏色
+      },
+      settingClone: []//備份預設設定
     },
     //方法
     methods: {
@@ -294,7 +324,7 @@
         let getFirstDay = new Date(this.year, this.month - 1, 1);
         this.firstDay = getFirstDay.getDay();
         this.generateArray();
-        this.getLocalStorege()
+        this.getLocalStoregeNote()
 
       },
       //產生日期陣列
@@ -375,6 +405,21 @@
         this.noteData = { ...this.resetNote }
         this.showModal = false
       },
+      //開啟設定
+      clickSetting() {
+        this.settingClone = { ...this.settingData }
+        this.showSetting = true
+      },
+      //儲存設定
+      settingSave() {
+        this.showSetting = false
+        localStorage.setItem('setting', JSON.stringify(this.settingData))
+      },
+      //取消設定
+      settingCancel() {
+        this.settingData = { ...this.settingClone }
+        this.showSetting = false
+      },
       //儲存
       saveData() {
         if (this.showDelete) {
@@ -424,7 +469,13 @@
         }
         this.getDate();
       },
-      getLocalStorege() {
+      //取得設定
+      getLocalStoregeSetting() {
+        let temp = JSON.parse(localStorage.getItem('setting'))
+        if (temp != null) this.settingData = { ...temp }
+      },
+      //取得備忘事項
+      getLocalStoregeNote() {
         let lastYear, lastMonth
         let nextYear, nextMonth
         if (this.month == 1) {
@@ -477,6 +528,7 @@
       }
     },
     created() {
+      this.getLocalStoregeSetting();
       //載入時先預設取得當天資料
       let date = new Date();
       this.year = date.getFullYear();
