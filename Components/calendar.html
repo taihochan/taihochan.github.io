@@ -399,7 +399,7 @@
         this.noteArray.forEach((item, index) => {
           item.id = index
         })
-        if (this.noteArray.length == 0) {
+        if (!this.noteArray.some(s => s.date == tempDate)) {
           this.dateArray.forEach(items => {
             items.forEach(item => {
               if (item.date == tempDate) {
@@ -410,9 +410,7 @@
         } else {
           this.dateArray.forEach(items => {
             items.forEach(item => {
-              if (this.noteArray.some(s => s.date == item.date)) {
-                item.noteEvent = this.noteArray.filter(f => f.date == item.date)
-              }
+              item.noteEvent = this.noteArray.filter(f => f.date == item.date)
             })
           })
         }
