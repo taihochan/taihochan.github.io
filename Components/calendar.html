@@ -57,6 +57,10 @@
       margin-left: 2rem;
     }
 
+    input {
+      background-color: transparent;
+    }
+
 
 
     #inputYear {
@@ -115,10 +119,11 @@
   <!-- <div id="map"></div> -->
 
   <div id="app">
-    <div class="title position-relative m-0 py-2" :style="{backgroundColor:settingData.titleYearBg}">
-      <h1 class="text-center" :style="{color: settingData.titleYearColor,backgroundColor:settingData.titleYearBg}">
+    <div class="title position-relative m-0 py-2"
+      :style="{ backgroundImage:createBackgroundString(settingData.titleYearBg1, settingData.titleYearBg2)}">
+      <h1 class="text-center" :style="{color: settingData.titleYearColor}">
         <input id="inputYear" type="number" v-model="year" max="9999" style="border: 0;border-bottom: 4px groove;"
-          :style="{color: settingData.titleYearColor,backgroundColor:settingData.titleYearBg}"> 行事曆
+          :style="{color: settingData.titleYearColor}"> 行事曆
       </h1>
       <i class="fas fa-sliders-h position-absolute settingIcon"
         style="font-size: 1.5rem; top: 0.3rem; right: 1rem ;color: gray" @click="clickSetting"></i>
@@ -129,7 +134,7 @@
         border="1">
         <tr>
           <th class="text-cneter p-0" colspan="7" style="font-size: 2rem;"
-            :style="{backgroundColor:settingData.titleMonthBg}">
+            :style="{backgroundImage:createBackgroundString(settingData.titleMonthBg1, settingData.titleMonthBg2)}">
             <div class="d-flex justify-content-center align-items-center">
               <span class="clickLeft" @click="clickLeft"></span>
               <p style="white-space: nowrap;" :style="{color: settingData.titleMonthColor}">{{month}}月</p>
@@ -138,19 +143,34 @@
           </th>
         </tr>
         <tr>
-          <th :style="{backgroundColor:settingData.weekendTitleBg,color: settingData.weekendTitleColor}">日</th>
-          <th :style="{backgroundColor: settingData.weekTitleBg, color: settingData.weekTitleColor}">一</th>
-          <th :style="{backgroundColor: settingData.weekTitleBg, color: settingData.weekTitleColor}">二</th>
-          <th :style="{backgroundColor: settingData.weekTitleBg, color: settingData.weekTitleColor}">三</th>
-          <th :style="{backgroundColor: settingData.weekTitleBg, color: settingData.weekTitleColor}">四</th>
-          <th :style="{backgroundColor: settingData.weekTitleBg, color: settingData.weekTitleColor}">五</th>
-          <th :style="{backgroundColor:settingData.weekendTitleBg,color: settingData.weekendTitleColor}">六</th>
+          <th
+            :style="{
+            backgroundImage:createBackgroundString(settingData.weekendTitleBg1, settingData.weekendTitleBg2), color: settingData.weekendTitleColor}">
+            日</th>
+          <th
+            :style="{backgroundImage:createBackgroundString(settingData.weekTitleBg1, settingData.weekTitleBg2), color: settingData.weekTitleColor}">
+            一</th>
+          <th
+            :style="{backgroundImage:createBackgroundString(settingData.weekTitleBg1, settingData.weekTitleBg2), color: settingData.weekTitleColor}">
+            二</th>
+          <th
+            :style="{backgroundImage:createBackgroundString(settingData.weekTitleBg1, settingData.weekTitleBg2), color: settingData.weekTitleColor}">
+            三</th>
+          <th
+            :style="{backgroundImage:createBackgroundString(settingData.weekTitleBg1, settingData.weekTitleBg2), color: settingData.weekTitleColor}">
+            四</th>
+          <th
+            :style="{backgroundImage:createBackgroundString(settingData.weekTitleBg1, settingData.weekTitleBg2), color: settingData.weekTitleColor}">
+            五</th>
+          <th
+            :style="{backgroundImage:createBackgroundString(settingData.weekendTitleBg1, settingData.weekendTitleBg2),color: settingData.weekendTitleColor}">
+            六</th>
         </tr>
         <template v-for="(items, index) in dateArray">
           <tr>
             <template v-for="item in items">
               <td v-if="item.isWeekend&&item.thisMonth" :id="item.date" @click="clickDate(item)"
-                :style="{backgroundColor:settingData.weekendBg,color: settingData.weekendColor}">
+                :style="{backgroundImage:createBackgroundString(settingData.weekendBg1, settingData.weekendBg2),color: settingData.weekendColor}">
                 <div v-if="!item.isNote">
                   <p>{{item.day}}</p>
                 </div>
@@ -167,7 +187,7 @@
                 </div>
               </td>
               <td v-else-if="!item.isWeekend&&item.thisMonth" :id="item.date" @click="clickDate(item)"
-                :style="{backgroundColor:settingData.weekBg,color: settingData.weekColor}">
+                :style="{backgroundImage:createBackgroundString(settingData.weekBg1, settingData.weekBg2),color: settingData.weekColor}">
                 <div v-if="!item.isNote">
                   <p>{{item.day}}</p>
                 </div>
@@ -184,7 +204,7 @@
                 </div>
               </td>
               <td v-else :id="item.date" @click="clickDate(item)"
-                :style="{backgroundColor:settingData.notThisMonthBg,color: settingData.notThisMonthColor}">
+                :style="{backgroundImage:createBackgroundString(settingData.notThisMonthBg1, settingData.notThisMonthBg2),color: settingData.notThisMonthColor}">
                 <div v-if="!item.isNote">
                   <p>{{item.day}}</p>
                 </div>
@@ -225,21 +245,28 @@
         </div>
       </div>
       <div v-if="showSetting" class="settingArea position-absolute top-0" style="width: 99vw;height:100vh;">
-        <div class="settingModal position-absolute top-0 end-0 text-end p-2" style="background-color: #6d767fb2;">
+        <div class="settingModal position-absolute top-0 end-0 text-start p-2" style="background-color: #6d767fb2;">
           <p>年份字體顏色　:　<input type="color" name="titleYearColor" v-model="settingData.titleYearColor"></p>
-          <p>年份背景顏色　:　<input type="color" name="titleYearBg" v-model="settingData.titleYearBg"></p>
-          <p>月份字體顏色:　<input type="color" name="titleMonthColor" v-model="settingData.titleMonthColor"></p>
-          <p>月份背景顏色:　<input type="color" name="titleMonthBg" v-model="settingData.titleMonthBg"></p>
-          <p>表格標題(周末)顏色:　<input type="color" name="weekendTitleColor" v-model="settingData.weekendTitleColor"></p>
-          <p>表格標題(周末)背景顏色:　<input type="color" name="weekendTitleBg" v-model="settingData.weekendTitleBg"></p>
-          <p>表格標題(平日)顏色:　<input type="color" name="weekTitleColor" v-model="settingData.weekTitleColor"></p>
-          <p>表格標題(平日)背景顏色:　<input type="color" name="weekTitleBg" v-model="settingData.weekTitleBg"></p>
-          <p>表格內容(周末)顏色:　<input type="color" name="weekendColor" v-model="settingData.weekendColor"></p>
-          <p>表格內容(周末)背景顏色:　<input type="color" name="weekendBg" v-model="settingData.weekendBg"></p>
-          <p>表格內容(平日)顏色:　<input type="color" name="weekColor" v-model="settingData.weekColor"></p>
-          <p>表格內容(平日)背景顏色:　<input type="color" name="weekBg" v-model="settingData.weekBg"></p>
-          <p>表格內容(非當月)顏色:　<input type="color" name="notThisMonthColor" v-model="settingData.notThisMonthColor"></p>
-          <p>表格內容(非當月)背景顏色:　<input type="color" name="notThisMonthBg" v-model="settingData.notThisMonthBg"></p>
+          <p>年份背景顏色　:　<input type="color" name="titleYearBg1" v-model="settingData.titleYearBg1"><input type="color"
+              name="titleYearBg2" v-model="settingData.titleYearBg2"></p>
+          <p>月份字體顏色　:　<input type="color" name="titleMonthColor" v-model="settingData.titleMonthColor"></p>
+          <p>月份背景顏色　:　<input type="color" name="titleMonthBg1" v-model="settingData.titleMonthBg1"><input type="color"
+              name="titleMonthBg2" v-model="settingData.titleMonthBg2"></p>
+          <p>表格標題(周末)顏色　:　<input type="color" name="weekendTitleColor" v-model="settingData.weekendTitleColor"></p>
+          <p>表格標題(周末)背景顏色　:　<input type="color" name="weekendTitleBg1" v-model="settingData.weekendTitleBg1"><input
+              type="color" name="weekendTitleBg2" v-model="settingData.weekendTitleBg2"></p>
+          <p>表格標題(平日)顏色　:　<input type="color" name="weekTitleColor" v-model="settingData.weekTitleColor"></p>
+          <p>表格標題(平日)背景顏色　:　<input type="color" name="weekTitleBg1" v-model="settingData.weekTitleBg1"><input
+              type="color" name="weekTitleBg2" v-model="settingData.weekTitleBg2"></p>
+          <p>表格內容(周末)顏色　:　<input type="color" name="weekendColor" v-model="settingData.weekendColor"></p>
+          <p>表格內容(周末)背景顏色　:　<input type="color" name="weekendBg1" v-model="settingData.weekendBg1"><input type="color"
+              name="weekendBg2" v-model="settingData.weekendBg2"></p>
+          <p>表格內容(平日)顏色　:　<input type="color" name="weekColor" v-model="settingData.weekColor"></p>
+          <p>表格內容(平日)背景顏色　:　<input type="color" name="weekBg1" v-model="settingData.weekBg1"><input type="color"
+              name="weekBg2" v-model="settingData.weekBg2"></p>
+          <p>表格內容(非當月)顏色　:　<input type="color" name="notThisMonthColor" v-model="settingData.notThisMonthColor"></p>
+          <p>表格內容(非當月)背景顏色　:　<input type="color" name="notThisMonthBg1" v-model="settingData.notThisMonthBg1"><input
+              type="color" name="notThisMonthBg2" v-model="settingData.notThisMonthBg2"></p>
           <div class="settingBtn text-center">
             <button @click="settingSave">儲存</button>
             <button @click="settingCancel">取消</button>
@@ -308,19 +335,26 @@
       showSetting: false,//顯示設定
       settingData: {
         titleYearColor: '#000000',//年份字體顏色
-        titleYearBg: '#ffffff',//年份字體顏色
+        titleYearBg1: '#ffffff',//年份背景顏色
+        titleYearBg2: '#ffffff',//年份背景顏色
         titleMonthColor: '#000000',//月份字體顏色
-        titleMonthBg: '#faebd7',//月份字體顏色
+        titleMonthBg1: '#faebd7',//月份背景顏色
+        titleMonthBg2: '#faebd7',//月份背景顏色
         weekendTitleColor: '#5c0909',//表格標題(周末)顏色
-        weekendTitleBg: '#ececec',//表格標題(周末)背景顏色
+        weekendTitleBg1: '#ececec',//表格標題(周末)背景顏色
+        weekendTitleBg2: '#ececec',//表格標題(周末)背景顏色
         weekTitleColor: '#100e5e',//表格標題(平日)顏色
-        weekTitleBg: '#ececec',//表格標題(平日)背景顏色
+        weekTitleBg1: '#ececec',//表格標題(平日)背景顏色
+        weekTitleBg2: '#ececec',//表格標題(平日)背景顏色
         weekendColor: '#c77d7d',//表格內容(周末)顏色
-        weekendBg: '#ececec',//表格內容(周末)背景顏色
+        weekendBg1: '#ececec',//表格內容(周末)背景顏色
+        weekendBg2: '#ececec',//表格內容(周末)背景顏色
         weekColor: '#549b9b',//表格內容(平日)顏色
-        weekBg: '#ececec',//表格內容(平日)背景顏色
+        weekBg1: '#ececec',//表格內容(平日)背景顏色
+        weekBg2: '#ececec',//表格內容(平日)背景顏色
         notThisMonthColor: '#747171',//表格內容(非當月)顏色
-        notThisMonthBg: '#ececec',//表格內容(非當月)背景顏色
+        notThisMonthBg1: '#ececec',//表格內容(非當月)背景顏色
+        notThisMonthBg2: '#ececec',//表格內容(非當月)背景顏色
       },
       settingClone: []//備份預設設定
     },
@@ -532,11 +566,13 @@
           })
         })
         this.noteArray = Array.from(temps)
+      },
+      createBackgroundString(color1, color2) {
+        return `linear-gradient(100deg, ${color1}, ${color2})`;
       }
     },
     //運算
     computed: {
-
     },
     //監聽
     watch: {
