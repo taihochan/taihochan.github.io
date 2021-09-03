@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title</title>
+    <!-- 載入Vue框架 -->
+    <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+    <!-- 引用Bootstrap CSS Style -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <!-- 引用FontAwesome -->
+    <script src="https://kit.fontawesome.com/aaacc8f3a5.js" crossorigin="anonymous"></script>
+    <style>
+        .answer,
+        .puzzleGame {
+            width: 50vw;
+        }
+
+        .answer img {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <button @click="test">測試</button>
+        <div class="input d-flex flex-nowrap justify-content-center">
+            <input type="number" min="3" name="xCount" id="xCount" v-model="xCount">X
+            <input type="number" min="3" name="yCount" id="yCount" v-model="yCount">
+        </div>
+        <div class="puzzleArea text-center d-flex justify-content-center">
+            <div class="answer">
+                <img id="answerImg" src="..\Images\puzzle.webp" alt="參考答案">
+            </div>
+            <div class="puzzleGame">
+                <template v-for="row in yCount">
+                    <div class="rowLine d-flex">
+                        <template v-for="col in xCount">
+                            <div @click="clickPuzzle(col,row)" class="colLine" :class="'x'+col+'y'+row"
+                                :id=`x${col}y${row}`>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+</body>
+<!-- 引用Boostrap Script -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
+    integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"
+    integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/"
+    crossorigin="anonymous"></script>
+<script>
+    var head = document.head;
+    var styleElements = document.createElement('style');
+    var app = new Vue({
+        //載入位置
+        el: '#app',
+        //資料
+        data: {
+            answerImg: document.querySelector('#answerImg'),//參考圖片
+            imgWidth: 0,//圖片寬度
+            imgHeigth: 0,//圖片高度
+            xCount: 3,//橫向幾塊
+            yCount: 3,//直向幾塊
+            puzzlePeaceWidth: 0,//一格寬度
+            puzzlePeaceHeight: 0,//一格高度
+            moveEnable: false,//是否可移動
+            correctPosotion: [],//正確排列順序
+        },
+        //方法
+        methods: {
+            //取得拼圖區塊長寬
+            getPuzzleImageSize() {
+                this.answerImg = document.querySelector('#answerImg');
+                this.imgWidth = this.answerImg.width
+                this.imgHeigth = this.answerImg.height
+                this.puzzlePeaceWidth = this.imgWidth / this.xCount
+                this.puzzlePeaceHeight = this.imgHeigth / this.yCount
+                this.setCSS();
+                this.setCorrectData();
+            },
+            setCSS() {
+                styleElements.innerHTML = ''
+                for (let y = 1; y <= this.yCount; y++) {
+                    for (let x = 1; x <= this.xCount; x++) {
+                        if (y == this.yCount && x == this.xCount) {
+                            styleElements.innerHTML += `.x${x}y${y}{
+                                width:${this.puzzlePeaceWidth}px; 
+                                height:${this.puzzlePeaceHeight}px; 
+                                margin: 0.5px;
+                            }`
+                        } else {
+                            styleElements.innerHTML += `.x${x}y${y}{
+                                background-image: url('../Images/puzzle.webp');
+                                margin: 0.5px;
+                                background-Size:${this.answerImg.width}px ${this.answerImg.height}px; 
+                                width:${this.puzzlePeaceWidth}px; 
+                                height:${this.puzzlePeaceHeight}px; 
+                                background-Position:-${(x - 1) * this.puzzlePeaceWidth}px -${(y - 1) * this.puzzlePeaceHeight}px
+                            }`
+                        }
+                    }
+                }
+            },
+            setCorrectData() {
+                let rowTemp = new Array();
+                for (let y = 1; y <= this.yCount; y++) {
+                    let colTemp = new Array();
+                    for (let x = 1; x <= this.xCount; x++) {
+                        colTemp.push(`x${x}y${y}`)
+                    }
+                    rowTemp.push(colTemp)
+                }
+                this.correctPosotion = rowTemp
+            },
+            clickPuzzle(x, y) {
+                this.checkMove(x, y)
+            },
+            checkMove(x, y) {
+                let clcikClassName = `x${x}y${y}`
+                let clickQuery = document.querySelector(`.${clcikClassName}`)
+                console.log(clickQuery)
+
+            },
+            test() {
+                var none = document.querySelector('#x3y3')
+                var change = document.querySelector('#x2y3')
+
+                none.className = 'x2y3'
+                change.className = 'x3y3'
+
+
+            }
+        },
+        //運算
+        computed: {
+        },
+        //監聽
+        watch: {
+            xCount: function (value) {
+                this.xCount = parseInt(value)
+                this.getPuzzleImageSize()
+            },
+            yCount: function (value) {
+                this.yCount = Number(value)
+                this.getPuzzleImageSize()
+
+            }
+
+        },
+        created() {
+
+        },
+        mounted() {
+            this.answerImg = document.querySelector('#answerImg');
+            this.imgWidth = this.answerImg.width
+            this.imgHeigth = this.answerImg.height
+            this.puzzlePeaceWidth = this.imgWidth / this.xCount
+            this.puzzlePeaceHeight = this.imgHeigth / this.yCount
+            this.setCSS()
+            this.setCorrectData();
+            head.append(styleElements)
+
+            window.onresize = () => {
+                this.getPuzzleImageSize();
+            }
+
+
+
+        }
+    })
+</script>
+
+</html>

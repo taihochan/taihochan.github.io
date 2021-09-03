@@ -21,17 +21,27 @@
         .m-auto-0 {
             margin: auto 0;
         }
+
+        .contentDiv {
+            border: 4px groove #9da1bcde;
+        }
+
+        .w-100 {
+            border-bottom: 3px solid #898fb2de;
+        }
     </style>
 </head>
 
 <body>
     <div id="app">
-        <div class="container w-50">
+        <div class="container w-50 contentDiv">
             <div class="row">
-                <div class="col col-md-2 col-xs-12 text-center border border-4 border-primary">
+                <div class="col col-md-2 col-xs-12 text-center"
+                    style="background-image: linear-gradient(45deg, #78c2e6, #c8dadf);">
                     <img src="Images\personalImg.png" width="100%" alt="個人照">
                 </div>
-                <div class="col col-md-10 col-xs-12 d-flex text-start border border-start-0 border-4 border-primary">
+                <div class="col col-md-10 col-xs-12 d-flex text-start"
+                    style="background-image: linear-gradient(45deg, #84a3ea, transparent);">
                     <ul class="m-auto-0">
                         <li>姓名 : 戴合謙</li>
                         <li>學歷 : 靜宜大學資訊工程</li>
@@ -40,11 +50,22 @@
                     </ul>
                 </div>
                 <div class="w-100"></div>
-                <div class="col col-12 border border-top-0 border-4 border-primary">Lorem ipsum dolor sit amet
-                    consectetur adipisicing elit. Esse, dolorem quod aperiam praesentium voluptatem numquam, illum
-                    facere adipisci architecto ipsa eius dolore error dignissimos recusandae iure, in eligendi
-                    perspiciatis minus!</div>
+                <div class="col col-12"
+                    style="background-image: linear-gradient(172deg, rgb(132, 163, 234), transparent);">Lorem ipsum
+                    dolor sit, amet consectetur adipisicing elit. Quibusdam, nemo doloribus! Necessitatibus quam laborum
+                    molestiae vero fugiat! In officiis sit maiores sapiente aspernatur vitae quos provident! Ab aut
+                    sequi eius.</div>
+                <div class="w-100"></div>
+                <div class="col col-12">
+                    練習作品
+                    <ul>
+                        <li><a href="https://taihochan.github.io/Components/calendar.html" target="_blank">行事曆(Vue)</a>
+                        </li>
+                        <li></li>
+                    </ul>
+                </div>
             </div>
+
         </div>
     </div>
     <Calendar></Calendar>
