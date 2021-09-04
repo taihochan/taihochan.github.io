@@ -27,7 +27,6 @@
 
 <body>
     <div id="app">
-        <button @click="test">測試</button>
         <div class="input d-flex flex-nowrap justify-content-center">
             <input type="number" min="3" name="xCount" id="xCount" v-model="xCount">X
             <input type="number" min="3" name="yCount" id="yCount" v-model="yCount">
@@ -73,7 +72,12 @@
             puzzlePeaceWidth: 0,//一格寬度
             puzzlePeaceHeight: 0,//一格高度
             moveEnable: false,//是否可移動
-            correctPosotion: [],//正確排列順序
+            correctPosition: [],//正確排列順序
+            puzzlePosition: [],//現在拼圖排列
+            puzzleWhitePos: {
+                x: 0,
+                y: 0
+            }//白色拼圖位置
         },
         //方法
         methods: {
@@ -87,7 +91,10 @@
                 this.setCSS();
                 this.setCorrectData();
             },
+            //設定拼圖區塊樣式
             setCSS() {
+                this.puzzleWhitePos.x = this.xCount - 1
+                this.puzzleWhitePos.y = this.yCount - 1
                 styleElements.innerHTML = ''
                 for (let y = 1; y <= this.yCount; y++) {
                     for (let x = 1; x <= this.xCount; x++) {
@@ -101,7 +108,8 @@
                             styleElements.innerHTML += `.x${x}y${y}{
                                 background-image: url('../Images/puzzle.webp');
                                 margin: 0.5px;
-                                background-Size:${this.answerImg.width}px ${this.answerImg.height}px; 
+                                background-Size:${this.answerImg.width}px ${this.answerImg.height}px;
+                                background-repeat:no-repeat; 
                                 width:${this.puzzlePeaceWidth}px; 
                                 height:${this.puzzlePeaceHeight}px; 
                                 background-Position:-${(x - 1) * this.puzzlePeaceWidth}px -${(y - 1) * this.puzzlePeaceHeight}px
@@ -110,6 +118,7 @@
                     }
                 }
             },
+            // 設定正確拼圖順序的陣列
             setCorrectData() {
                 let rowTemp = new Array();
                 for (let y = 1; y <= this.yCount; y++) {
@@ -119,25 +128,60 @@
                     }
                     rowTemp.push(colTemp)
                 }
-                this.correctPosotion = rowTemp
+                this.correctPosition = rowTemp
+                this.puzzlePosition = JSON.parse(JSON.stringify(this.correctPosition))
             },
+            //觸發點擊事件
             clickPuzzle(x, y) {
-                this.checkMove(x, y)
+                this.checkMove(x - 1, y - 1)
+                if (this.checkWin()) alert('win')
             },
+            //檢查點擊是否可移動
             checkMove(x, y) {
-                let clcikClassName = `x${x}y${y}`
-                let clickQuery = document.querySelector(`.${clcikClassName}`)
-                console.log(clickQuery)
-
+                //y軸相減為1且x軸相減為0代表在正上方或正下方, 可以交換
+                if (Math.abs(this.puzzleWhitePos.y - y) == 1 && this.puzzleWhitePos.x - x == 0) {
+                    this.movingPuzzle(x, y)
+                    return
+                }
+                //x軸相減為1且y軸相減為0代表在左邊或右邊, 可以交換
+                if (Math.abs(this.puzzleWhitePos.x - x) == 1 && this.puzzleWhitePos.y - y == 0) {
+                    this.movingPuzzle(x, y)
+                }
             },
-            test() {
-                var none = document.querySelector('#x3y3')
-                var change = document.querySelector('#x2y3')
+            //移動拼圖
+            movingPuzzle(x, y) {
+                //用class名稱去抓取白色區塊
+                let white = document.querySelector(`.x${this.xCount}y${this.yCount}`)
+                //用id去抓取點擊位置的區塊(className會交換, id是固定的)
+                let change = document.querySelector(`#x${x + 1}y${y + 1}`)
 
-                none.className = 'x2y3'
-                change.className = 'x3y3'
+                white.classList.remove(white.classList[1])
+                white.classList.add(`${this.puzzlePosition[y][x]}`)
+                change.classList.remove(change.classList[1])
+                change.classList.add(`x${this.xCount}y${this.yCount}`)
 
+                let temp = this.puzzlePosition[y][x]
+                //紀錄最新的拼圖className位置, 方便撈取替換
+                this.puzzlePosition[y][x] = this.puzzlePosition[this.puzzleWhitePos.y][this.puzzleWhitePos.x]
+                this.puzzlePosition[this.puzzleWhitePos.y][this.puzzleWhitePos.x] = temp
 
+                //紀錄現在白色區塊位置
+                this.puzzleWhitePos.x = x
+                this.puzzleWhitePos.y = y
+            },
+            //檢查是否拚完, 利用正確的陣列跟當前拼圖陣列比對
+            checkWin() {
+                let result = true
+
+                for (let y = 0; y < this.yCount; y++) {
+                    for (let x = 0; x < this.xCount; x++) {
+                        if (this.puzzlePosition[y][x] != this.correctPosition[y][x]) {
+                            result = false
+                        }
+                    }
+                }
+
+                return result
             }
         },
         //運算
@@ -167,6 +211,7 @@
             this.puzzlePeaceHeight = this.imgHeigth / this.yCount
             this.setCSS()
             this.setCorrectData();
+            this.puzzlePosition = JSON.parse(JSON.stringify(this.correctPosition))
             head.append(styleElements)
 
             window.onresize = () => {
