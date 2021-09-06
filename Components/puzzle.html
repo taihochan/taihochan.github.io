@@ -27,9 +27,17 @@
 
 <body>
     <div id="app">
-        <div class="input d-flex flex-nowrap justify-content-center">
-            <input type="number" min="3" name="xCount" id="xCount" v-model="xCount">X
-            <input type="number" min="3" name="yCount" id="yCount" v-model="yCount">
+        <div class="option">
+            <span class="d-block w-100 text-center">拼圖大小</span>
+            <div class="input d-flex flex-nowrap justify-content-center">
+                <input type="number" min="3" name="xCount" id="xCount" v-model="xCount">X
+                <input type="number" min="3" name="yCount" id="yCount" v-model="yCount">
+            </div>
+            <span class="d-block w-100 text-center">打亂次數</span>
+            <div class="input d-flex flex-nowrap justify-content-center">
+                <input type="number" min="1" name="randomCount" id="randomCount" v-model="randomCount">
+                <button @click="clickRandom">確認</button>
+            </div>
         </div>
         <div class="puzzleArea text-center d-flex justify-content-center">
             <div class="answer">
@@ -77,7 +85,8 @@
             puzzleWhitePos: {
                 x: 0,
                 y: 0
-            }//白色拼圖位置
+            },//白色拼圖位置
+            randomCount: 0,//打亂次數
         },
         //方法
         methods: {
@@ -130,6 +139,45 @@
                 }
                 this.correctPosition = rowTemp
                 this.puzzlePosition = JSON.parse(JSON.stringify(this.correctPosition))
+            },
+            //確認打亂
+            clickRandom() {
+                let randomPos = this.getRandom();
+                console.log(randomPos)
+            },
+            //取得可打亂位置
+            getRandom() {
+                let randomPos = new Array();
+                let x = this.puzzleWhitePos.x
+                let y = this.puzzleWhitePos.y
+
+                for (let i = 1; i <= 4; i++) {
+                    switch (i) {
+                        case 1://上方
+                            if (y - 1 >= 0) {
+                                randomPos.push({ x: x, y: y - 1, class: this.puzzlePosition[y - 1][x] })
+                            }
+                            break
+                        case 2://下方
+                            if (y + 1 < this.yCount) {
+                                randomPos.push({ x: x, y: y + 1, class: this.puzzlePosition[y + 1][x] })
+                            }
+                            break
+                        case 3://左方
+                            if (x - 1 >= 0) {
+                                randomPos.push({ x: x - 1, y: y, class: this.puzzlePosition[y][x - 1] })
+                            }
+                            break
+                        case 4://右方
+                            if (x + 1 < this.xCount) {
+                                randomPos.push({ x: x + 1, y: y, class: this.puzzlePosition[y][x + 1] })
+                            }
+                            break
+                        default:
+                            break
+                    }
+                }
+                return randomPos
             },
             //觸發點擊事件
             clickPuzzle(x, y) {
