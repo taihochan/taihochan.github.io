@@ -16,7 +16,7 @@
     <style>
         .answer,
         .puzzleGame {
-            width: 50vw;
+            width: 49vw;
         }
 
         .answer img {
@@ -28,6 +28,12 @@
 <body>
     <div id="app">
         <div class="option">
+            <div class="input d-flex flex-nowrap justify-content-center">
+                <label for="upload">選擇上傳圖檔</label>
+                <input id="upload" type="file" accept="image/*" @change="showFile">
+                <button class="btn btn-primary" type="button" @click="submit">上傳</button>
+                <!-- <button class="btn btn-primary" type="button" @click="getImg">取得</button> -->
+            </div>
             <span class="d-block w-100 text-center">拼圖大小</span>
             <div class="input d-flex flex-nowrap justify-content-center">
                 <input type="number" min="3" name="xCount" id="xCount" v-model="xCount">X
@@ -37,24 +43,26 @@
             <div class="input d-flex flex-nowrap justify-content-center">
                 <input type="number" min="1" name="randomCount" id="randomCount" v-model="randomCount">
                 <button @click="clickRandom">確認</button>
+                <button @click="clickRestart">重來</button>
             </div>
         </div>
-        <div class="puzzleArea text-center d-flex justify-content-center">
+        <div class="puzzleArea text-center d-flex justify-content-around">
             <div class="answer">
-                <img id="answerImg" src="..\Images\puzzle.webp" alt="參考答案">
+                <img id="answerImg" :src="imgUrl" alt="參考答案">
             </div>
             <div class="puzzleGame">
-                <template v-for="row in yCount">
+                <template v-for="(row, yIndex) in yCount">
                     <div class="rowLine d-flex">
-                        <template v-for="col in xCount">
+                        <template v-for="(col, xIndex) in xCount">
                             <div @click="clickPuzzle(col,row)" class="colLine" :class="'x'+col+'y'+row"
-                                :id=`x${col}y${row}`>
+                                :id=`x${col}y${row}` :key=`${xyCount}${yIndex}${xIndex}`>
                             </div>
                         </template>
                     </div>
                 </template>
             </div>
         </div>
+        <span class="d-block w-100 text-center">移動次數 : {{moveCount}}</span>
     </div>
 </body>
 <!-- 引用Boostrap Script -->
@@ -72,11 +80,13 @@
         el: '#app',
         //資料
         data: {
+            imgUrl: '../Images/puzzle.webp',//圖片連結
             answerImg: document.querySelector('#answerImg'),//參考圖片
             imgWidth: 0,//圖片寬度
             imgHeigth: 0,//圖片高度
             xCount: 3,//橫向幾塊
             yCount: 3,//直向幾塊
+            xyCount: '33',//v-for key
             puzzlePeaceWidth: 0,//一格寬度
             puzzlePeaceHeight: 0,//一格高度
             moveEnable: false,//是否可移動
@@ -87,9 +97,74 @@
                 y: 0
             },//白色拼圖位置
             randomCount: 0,//打亂次數
+            moveCount: 0, //移動次數
+            album: 'IZFmwWc', // 若要指定傳到某個相簿，就填入相簿的 ID
+            token: '97e2b584680f2d73962affef32564139233ca868',
+            file: null, // 準備拿 input type="file" 的值
+            fs: {
+                name: '', // input的圖檔名稱
+                thumbnail: null, // input的圖片縮圖
+                size: null // input的圖片大小
+            },
         },
         //方法
         methods: {
+            showFile(e) {
+                this.file = e.target.files[0]; // input type="file" 的值
+                this.fs.name = this.file.name; // input的圖檔名稱
+                this.fs.size = Math.floor(this.file.size * 0.001) + 'KB'; // input的圖片大小
+                this.fs.thumbnail = window.URL.createObjectURL(this.file); // input的圖片縮圖
+                this.title = this.fs.name; // 預設 input 的圖檔名稱為圖片上傳時的圖片標題
+            },
+            async submit() {
+                let url = 'https://api.imgur.com/3/image'
+                let data = {}
+                let settings = {
+                    async: true,
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${this.token}`
+                    },
+                    body: {}
+                };
+
+                let form = new FormData();
+                form.append('image', this.file);
+                form.append('title', this.title);
+                form.append('description', this.des);
+                form.append('album', this.album);
+                settings.body = form;
+
+                await fetch(url, settings).then(function (response) {
+                    return response.json()
+                }).then(function (json) {
+                    console.log(json)
+                    data = json.data
+                }).catch(function (err) {
+                    console.log(err)
+                    alert('fail')
+                })
+                this.imgUrl = data.link
+            },
+            // getImg() {
+            //     let url = 'https://api.imgur.com/3/album/IZFmwWc/images'
+
+            //     let settings = {
+            //         method: 'GET',
+            //         headers: {
+            //             Authorization: `Bearer ${this.token}`
+            //         },
+            //     };
+
+            //     fetch(url, settings).then(function (response) {
+            //         return response.json()
+            //     }).then(function (j) {
+            //         console.log(j)
+            //     }).catch(function (err) {
+            //         console.log(err)
+            //         alert('fail')
+            //     })
+            // },
             //取得拼圖區塊長寬
             getPuzzleImageSize() {
                 this.answerImg = document.querySelector('#answerImg');
@@ -115,7 +190,7 @@
                             }`
                         } else {
                             styleElements.innerHTML += `.x${x}y${y}{
-                                background-image: url('../Images/puzzle.webp');
+                                background-image: url('${this.imgUrl}');
                                 margin: 0.5px;
                                 background-Size:${this.answerImg.width}px ${this.answerImg.height}px;
                                 background-repeat:no-repeat; 
@@ -142,8 +217,19 @@
             },
             //確認打亂
             clickRandom() {
-                let randomPos = this.getRandom();
-                console.log(randomPos)
+                let lastRandom = "";
+
+                for (let count = 1; count <= this.randomCount; count++) {
+                    let randomPos = []
+                    let nowRandom = 0
+
+                    do {
+                        randomPos = this.getRandom();
+                        nowRandom = Math.floor(Math.random() * randomPos.length)
+                    } while (lastRandom == randomPos[nowRandom].class)
+                    lastRandom = randomPos[nowRandom].class
+                    this.checkMove(randomPos[nowRandom].x, randomPos[nowRandom].y)
+                }
             },
             //取得可打亂位置
             getRandom() {
@@ -181,19 +267,22 @@
             },
             //觸發點擊事件
             clickPuzzle(x, y) {
-                this.checkMove(x - 1, y - 1)
-                if (this.checkWin()) alert('win')
+                if (this.checkMove(x - 1, y - 1)) {
+                    this.moveCount++
+                    if (this.checkWin()) alert('win')
+                }
             },
             //檢查點擊是否可移動
             checkMove(x, y) {
                 //y軸相減為1且x軸相減為0代表在正上方或正下方, 可以交換
                 if (Math.abs(this.puzzleWhitePos.y - y) == 1 && this.puzzleWhitePos.x - x == 0) {
                     this.movingPuzzle(x, y)
-                    return
+                    return true
                 }
                 //x軸相減為1且y軸相減為0代表在左邊或右邊, 可以交換
                 if (Math.abs(this.puzzleWhitePos.x - x) == 1 && this.puzzleWhitePos.y - y == 0) {
                     this.movingPuzzle(x, y)
+                    return true
                 }
             },
             //移動拼圖
@@ -230,6 +319,10 @@
                 }
 
                 return result
+            },
+            clickRestart() {
+                this.xyCount = '0'
+                this.moveCount = 0
             }
         },
         //運算
@@ -239,12 +332,17 @@
         watch: {
             xCount: function (value) {
                 this.xCount = parseInt(value)
+                this.xyCount = `${this.yCount}${this.xCount}`
                 this.getPuzzleImageSize()
             },
             yCount: function (value) {
                 this.yCount = Number(value)
+                this.xyCount = `${this.yCount}${this.xCount}`
                 this.getPuzzleImageSize()
-
+            },
+            imgUrl: function (value) {
+                console.log('imgUrl : ', value)
+                this.getPuzzleImageSize()
             }
 
         },
