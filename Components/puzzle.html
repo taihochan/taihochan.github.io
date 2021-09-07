@@ -14,6 +14,10 @@
     <!-- 引用FontAwesome -->
     <script src="https://kit.fontawesome.com/aaacc8f3a5.js" crossorigin="anonymous"></script>
     <style>
+        body {
+            background-color: rgb(83, 132, 160);
+        }
+
         .answer,
         .puzzleGame {
             width: 49vw;
@@ -86,7 +90,7 @@
             imgHeigth: 0,//圖片高度
             xCount: 3,//橫向幾塊
             yCount: 3,//直向幾塊
-            xyCount: '33',//v-for key
+            xyCount: false,//v-for key
             puzzlePeaceWidth: 0,//一格寬度
             puzzlePeaceHeight: 0,//一格高度
             moveEnable: false,//是否可移動
@@ -321,7 +325,7 @@
                 return result
             },
             clickRestart() {
-                this.xyCount = '0'
+                this.xyCount = !this.xyCount
                 this.moveCount = 0
             }
         },
