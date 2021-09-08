@@ -127,7 +127,8 @@
                 this.title = this.fs.name; // 預設 input 的圖檔名稱為圖片上傳時的圖片標題
             },
             async submit() {
-                this.showGame = false
+                this.xCount = 0
+                this.yCount = 0
 
                 let url = 'https://api.imgur.com/3/image'
                 let data = {}
