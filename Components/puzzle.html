@@ -45,19 +45,19 @@
             </div>
             <span class="d-block w-100 text-center">拼圖大小</span>
             <div class="input d-flex flex-nowrap justify-content-center">
-                <input type="number" min="3" name="xCount" id="xCount" v-model="xCount">X
-                <input type="number" min="3" name="yCount" id="yCount" v-model="yCount">
+                <input type="number" min="0" name="xCount" id="xCount" v-model="xCount">X
+                <input type="number" min="0" name="yCount" id="yCount" v-model="yCount">
             </div>
             <span class="d-block w-100 text-center">打亂次數</span>
             <div class="input d-flex flex-nowrap justify-content-center">
                 <input type="number" min="1" name="randomCount" id="randomCount" v-model="randomCount">
                 <button @click="clickRandom">確認</button>
-                <button @click.once="clickRestart">重來</button>
+                <button @click="clickRestart">重來</button>
             </div>
         </div>
         <div class="puzzleArea text-center d-flex justify-content-around">
             <div class="answer">
-                <img id="answerImg" :src="imgUrl" alt="參考答案">
+                <img id="answerImg" :src="imgUrl" alt="參考答案" v-once="test(this)">
             </div>
             <div class="puzzleGame">
                 <template v-for="(row, yIndex) in yCount">
@@ -89,6 +89,7 @@
         el: '#app',
         //資料
         data: {
+            showGame: false,
             imgUrl: '../Images/puzzle.webp',//圖片連結
             answerImg: document.querySelector('#answerImg'),//參考圖片
             imgWidth: 0,//圖片寬度
@@ -126,6 +127,8 @@
                 this.title = this.fs.name; // 預設 input 的圖檔名稱為圖片上傳時的圖片標題
             },
             async submit() {
+                this.showGame = false
+
                 let url = 'https://api.imgur.com/3/image'
                 let data = {}
                 let settings = {
@@ -147,6 +150,7 @@
                 await fetch(url, settings).then(function (response) {
                     return response.json()
                 }).then(function (json) {
+                    alert('上傳成功')
                     console.log(json)
                     data = json.data
                 }).catch(function (err) {
@@ -363,8 +367,6 @@
 
         },
         mounted() {
-            this.xCount = 3
-            this.yCount = 3
             head.append(styleElements)
             // this.answerImg = document.querySelector('#answerImg');
             // this.imgWidth = this.answerImg.width
@@ -374,11 +376,10 @@
             // this.setCSS()
             // this.setCorrectData();
             // this.puzzlePosition = JSON.parse(JSON.stringify(this.correctPosition))
-
-
             window.onresize = () => {
                 this.getPuzzleImageSize();
             }
+            alert('輸入拼圖大小開始遊戲')
         }
     })
 </script>
