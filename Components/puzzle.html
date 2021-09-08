@@ -21,11 +21,15 @@
         .answer,
         .puzzleGame {
             width: 49vw;
-            height: 100%;
         }
 
         .answer img {
-            width: 100%;
+            width: 49vw;
+            height: auto;
+        }
+
+        input {
+            text-align: center;
         }
     </style>
 </head>
@@ -48,7 +52,7 @@
             <div class="input d-flex flex-nowrap justify-content-center">
                 <input type="number" min="1" name="randomCount" id="randomCount" v-model="randomCount">
                 <button @click="clickRandom">確認</button>
-                <button @click="clickRestart">重來</button>
+                <button @click.once="clickRestart">重來</button>
             </div>
         </div>
         <div class="puzzleArea text-center d-flex justify-content-around">
@@ -89,8 +93,8 @@
             answerImg: document.querySelector('#answerImg'),//參考圖片
             imgWidth: 0,//圖片寬度
             imgHeigth: 0,//圖片高度
-            xCount: 3,//橫向幾塊
-            yCount: 3,//直向幾塊
+            xCount: 0,//橫向幾塊
+            yCount: 0,//直向幾塊
             xyCount: false,//v-for key
             puzzlePeaceWidth: 0,//一格寬度
             puzzlePeaceHeight: 0,//一格高度
@@ -329,7 +333,7 @@
                 this.xyCount = !this.xyCount
                 this.moveCount = 0
                 this.getPuzzleImageSize()
-            }
+            },
         },
         //運算
         computed: {
@@ -348,7 +352,10 @@
             },
             imgUrl: function (value) {
                 console.log('imgUrl : ', value)
-                this.getPuzzleImageSize()
+                this.$nextTick(function () {
+                    this.getPuzzleImageSize()
+                })
+                this.clickRestart();
             }
 
         },
@@ -356,22 +363,22 @@
 
         },
         mounted() {
-            this.answerImg = document.querySelector('#answerImg');
-            this.imgWidth = this.answerImg.width
-            this.imgHeigth = this.answerImg.height
-            this.puzzlePeaceWidth = this.imgWidth / this.xCount
-            this.puzzlePeaceHeight = this.imgHeigth / this.yCount
-            this.setCSS()
-            this.setCorrectData();
-            this.puzzlePosition = JSON.parse(JSON.stringify(this.correctPosition))
+            this.xCount = 3
+            this.yCount = 3
             head.append(styleElements)
+            // this.answerImg = document.querySelector('#answerImg');
+            // this.imgWidth = this.answerImg.width
+            // this.imgHeigth = this.answerImg.height
+            // this.puzzlePeaceWidth = this.imgWidth / this.xCount
+            // this.puzzlePeaceHeight = this.imgHeigth / this.yCount
+            // this.setCSS()
+            // this.setCorrectData();
+            // this.puzzlePosition = JSON.parse(JSON.stringify(this.correctPosition))
+
 
             window.onresize = () => {
                 this.getPuzzleImageSize();
             }
-
-
-
         }
     })
 </script>
