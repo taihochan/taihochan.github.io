@@ -73,7 +73,7 @@
       //方法
       methods: {
           addNewWork(){
-              axios.post(`https://script.google.com/macros/s/${this.sheetsID}/exec`)
+              axios.post(`https://script.google.com/macros/s/${this.apiID}/exec`)
           .then((res)=>{
               alert(res)
           }).catch((err)=>{
