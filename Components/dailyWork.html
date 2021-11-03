@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>工作紀錄登記</title>
+    <!-- 載入Vue框架 -->
+    <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+    <!-- 引用Bootstrap CSS Style -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We"
+      crossorigin="anonymous"
+    />
+    <!-- 引用Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap"
+      rel="stylesheet"
+    />
+    <!-- 引用FontAwesome -->
+    <script
+      src="https://kit.fontawesome.com/aaacc8f3a5.js"
+      crossorigin="anonymous"
+    ></script>
+    <style>
+       
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+        <div class="row">
+<div class="col-sm-12 col-md-6"></div>
+<div class="col-sm-12 col-md-6"></div>
+        </div>
+    </div>
+  </body>
+  <!-- 引用axios -->
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <!-- 引用Boostrap Script -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
+    integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"
+    integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/"
+    crossorigin="anonymous"
+  ></script>
+  <script>
+    // var clickMap = [];
+    var app = new Vue({
+      //載入位置
+      el: "#app",
+      //資料
+      data: {
+        apiID:'AKfycby0vazepX5Y9tpH9x22ZTSnEkoIDj--Fje9uBkWlWrHKNh9GQl7JMk0qWbYZvBD-yCvyQ',
+        parameter:{
+            date:null,
+            name:'',
+            tel:'',
+            phone:'',
+            type:'',
+            info:'',
+            money:0
+        }
+      },
+      //方法
+      methods: {
+          addNewWork(){
+              axios.post(`https://script.google.com/macros/s/${this.sheetsID}/exec`)
+          .then((res)=>{
+              alert(res)
+          }).catch((err)=>{
+              console.log('寫入失敗')
+          })
+        }
+      },
+      //運算
+      computed: {},
+      //監聽
+      watch: {},
+      created() {
+          let date = new Date();
+          this.parameter.date = `${date.getFullYear()}/${(date.getMonth()+1).toString().padStart(2,0)}/${date.getDay().toString().padStart(2,0)}`
+
+          if(date.getMonth()+1==1&&date.getDay()==1)alert('新的一年了請記得換一張新的工作表')
+
+          this.addNewWork()
+      }
+    });
+  </script>
+</html>
