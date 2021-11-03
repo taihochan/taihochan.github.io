@@ -26,17 +26,15 @@
       src="https://kit.fontawesome.com/aaacc8f3a5.js"
       crossorigin="anonymous"
     ></script>
-    <style>
-       
-    </style>
+    <style></style>
   </head>
 
   <body>
     <div id="app">
-        <div class="row">
-<div class="col-sm-12 col-md-6"></div>
-<div class="col-sm-12 col-md-6"></div>
-        </div>
+      <div class="row">
+        <div class="col-sm-12 col-md-6"></div>
+        <div class="col-sm-12 col-md-6"></div>
+      </div>
     </div>
   </body>
   <!-- 引用axios -->
@@ -59,26 +57,45 @@
       el: "#app",
       //資料
       data: {
-        apiID:'AKfycby0vazepX5Y9tpH9x22ZTSnEkoIDj--Fje9uBkWlWrHKNh9GQl7JMk0qWbYZvBD-yCvyQ',
-        parameter:{
-            date:null,
-            name:'',
-            tel:'',
-            phone:'',
-            type:'',
-            info:'',
-            money:0
+        apiID:
+          "AKfycby0vazepX5Y9tpH9x22ZTSnEkoIDj--Fje9uBkWlWrHKNh9GQl7JMk0qWbYZvBD-yCvyQ",
+        parameter: {
+          date: null,
+          name: "名字",
+          tel: "電話",
+          phone: "手機",
+          type: "項目",
+          info: "說明",
+          money: 0
         }
       },
       //方法
       methods: {
-          addNewWork(){
-              axios.post(`https://script.google.com/macros/s/${this.apiID}/exec`)
-          .then((res)=>{
-              alert(res)
-          }).catch((err)=>{
-              console.log('寫入失敗')
-          })
+        addNewWork() {
+          axios(
+            `https://script.google.com/macros/s/${this.apiID}/exec/?${this.getParameter()}`,
+            this.parameter
+          )
+            .then((res) => {
+              alert(res);
+            })
+            .catch((err) => {
+              console.log("寫入失敗");
+            });
+        },
+        getParameter() {
+          let keys = Object.keys(this.parameter);
+          let values = Object.values(this.parameter);
+          let concatString = "";
+          let tempString='';
+          for (let index = 0; index < keys.length; index++) {
+            concatString += `${keys[index]}=${values[index]} `
+          }
+
+          tempString = concatString.trimEnd();
+          concatString = tempString.replaceAll(' ', '&')
+
+          return concatString
         }
       },
       //運算
@@ -86,10 +103,13 @@
       //監聽
       watch: {},
       created() {
-          let date = new Date();
-          this.parameter.date = `${date.getFullYear()}/${(date.getMonth()+1).toString().padStart(2,0)}/${date.getDay().toString().padStart(2,0)}`
+        let date = new Date();
+        this.parameter.date = `${date.getFullYear()}/${(date.getMonth() + 1)
+          .toString()
+          .padStart(2, 0)}/${date.getDay().toString().padStart(2, 0)}`;
 
-          if(date.getMonth()+1==1&&date.getDay()==1)alert('新的一年了請記得換一張新的工作表')
+        if (date.getMonth() + 1 == 1 && date.getDay() == 1)
+          alert("新的一年了請記得換一張新的工作表");
 
           this.addNewWork()
       }
