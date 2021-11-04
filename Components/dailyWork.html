@@ -26,14 +26,162 @@
       src="https://kit.fontawesome.com/aaacc8f3a5.js"
       crossorigin="anonymous"
     ></script>
-    <style></style>
+    <style>
+      textarea {
+        resize: none;
+      }
+      input,
+      select {
+        height: 30px;
+        margin-bottom: 0.3rem;
+      }
+      .itemArea,
+      .input,
+      .radios {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      .itemArea {
+        margin-bottom: 0.3rem;
+      }
+      .radio {
+        display: flex;
+        align-items: center;
+        margin: 0 0.3rem;
+      }
+      .options {
+        position: absolute;
+        bottom: -12rem;
+        background-color: antiquewhite;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        height: 13rem;
+        overflow: scroll;
+        bottom: -12rem;
+        z-index: 2;
+      }
+    </style>
   </head>
 
   <body>
     <div id="app">
-      <div class="row">
-        <div class="col-sm-12 col-md-6"></div>
-        <div class="col-sm-12 col-md-6"></div>
+      <div class="text-center">
+        <h1 class="my-4">每日工作紀錄</h1>
+        <p>日期&nbsp:&nbsp{{this.parameter.date}}</p>
+        <div class="row">
+          <div class="col-sm-12 col-md-6">
+            <div class="input">
+              <p>
+                姓名&nbsp:&nbsp <input type="text" v-model="parameter.name" />
+              </p>
+            </div>
+            <div class="input position-relative">
+              <p>
+                地址&nbsp:&nbsp<input
+                  @click="showAddress=customersTemp.length>0?true:false"
+                  type="text"
+                  v-model="parameter.address"
+                />
+              </p>
+              <div class="options" v-show="showAddress">
+                <span
+                  class="p-2"
+                  v-for="item in customersTemp"
+                  @click="clickAddress(item)"
+                  >{{item[1]}}</span
+                >
+              </div>
+            </div>
+            <div class="input position-relative">
+              <p>
+                電話&nbsp:&nbsp<input
+                  @click="showTel=customerTemp.length>0&&customerTemp[2].length>0?true:false"
+                  type="text"
+                  v-model="parameter.tel"
+                />
+              </p>
+              <div class="options" v-show="showTel">
+                <span
+                  class="p-2"
+                  v-for="item in customerTemp"
+                  @click="clickTel(item)"
+                  >{{item[2]}}</span
+                >
+              </div>
+            </div>
+            <div class="input position-relative">
+              <p>
+                手機&nbsp:&nbsp<input
+                  @click="showPhone=customerTemp.length>0&&customerTemp[3].length>0?true:false"
+                  type="text"
+                  v-model="parameter.phone"
+                />
+              </p>
+              <div class="options" v-show="showPhone">
+                <span
+                  class="p-2"
+                  v-for="item in customerTemp"
+                  @click="clickPhone(item)"
+                  >{{item[3]}}</span
+                >
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-12 col-md-6">
+            <div class="itemArea">
+              <div class="radios">
+                <div class="radio">
+                  <input
+                    type="radio"
+                    id="new"
+                    value="安裝"
+                    v-model="parameter.type"
+                  />
+                  <label for="new">安裝</label>
+                </div>
+                <div class="radio">
+                  <input
+                    type="radio"
+                    id="fix"
+                    value="維修"
+                    v-model="parameter.type"
+                  />
+                  <label for="fix">維修</label>
+                </div>
+              </div>
+
+              <select v-model="itemSelect">
+                <template v-for="item in itemOption">
+                  <option>{{item}}</option>
+                </template>
+              </select>
+              <select v-model="secondItemSelect">
+                <template v-for="item in secondItemOption">
+                  <option>{{item}}</option>
+                </template>
+              </select>
+              <textarea
+                class="overflow-hidden"
+                v-model="parameter.info"
+                placeholder="品牌/型號/其他備註"
+                :rows="itemTextRow"
+                cols="27"
+              ></textarea>
+            </div>
+            <hr />
+            <div class="input mt-4">
+              <p>
+                金額&nbsp:&nbsp<input type="text" v-model="parameter.money" />
+              </p>
+            </div>
+          </div>
+          <div class="btn">
+            <button @click="clickConfirm">確認</button>
+          </div>
+        </div>
       </div>
     </div>
   </body>
@@ -57,51 +205,135 @@
       el: "#app",
       //資料
       data: {
-        apiID:
-          "AKfycby0vazepX5Y9tpH9x22ZTSnEkoIDj--Fje9uBkWlWrHKNh9GQl7JMk0qWbYZvBD-yCvyQ",
+        apiID: "",
         parameter: {
           date: null,
-          name: "名字",
-          tel: "電話",
-          phone: "手機",
-          type: "項目",
-          info: "說明",
-          money: 0
-        }
+          name: "",
+          address: "",
+          tel: "",
+          phone: "",
+          item: "",
+          type: "維修",
+          info: "",
+          money: ""
+        },
+        customersData: [],
+        customersTemp: [],
+        customerTemp: [],
+        showAddress: false,
+        showTel: false,
+        showPhone: false,
+        itemSelect: "",
+        secondItemSelect: "",
+        itemOption: ["爐具", "熱水器", "油煙機", "流理臺", "其他"],
+        secondItemOption: [],
+        stoveOption: ["嵌爐", "檯面爐", "快炒爐", "鑄鐵爐", "快速爐"],
+        waterOption: ["強制排氣", "抗強風", "一般", "電熱爐"]
       },
       //方法
       methods: {
+        clickConfirm() {
+          this.addNewWork();
+
+          if(this.customersData.filter(item=> item[0]==this.parameter.name&&item[1]==this.parameter.address).length==0){
+            alert('新客戶')
+            this.getCustomers();
+          }
+        },
+        clickAddress(value) {
+          this.parameter.address = value[1];
+          this.showAddress = false;
+        },
+        clickTel(value) {
+          this.parameter.tel = value[2];
+          this.showTel = false;
+        },
+        clickPhone(value) {
+          this.parameter.phone = value[3];
+          this.showPhone = false;
+        },
         addNewWork() {
-          axios(
-            `https://script.google.com/macros/s/${this.apiID}/exec/?${this.getParameter()}`,
-            this.parameter
-          )
+          this.apiID =
+            "AKfycbyKcBnPwW5rR39AQuFzbV-RY_vSpMqDgQK320LB4WY9KxYYsBSbIr9yFhmpvZIqNQkZ";
+          axios({
+            method: "post",
+            url: `https://script.google.com/macros/s/${this.apiID}/exec`,
+            data: this.parameter,
+            headers: {
+              "Content-Type": "text/plain;charset=utf-8"
+            }
+          })
             .then((res) => {
-              alert(res);
+              alert("登錄成功");
+            })
+            .catch((err) => {});
+        },
+        getCustomers() {
+          this.apiID =
+            "AKfycbxwHbEv0poVOqKdS0J4pLPK3hyFCpE4-WJ1yNvVLyNsrZnb2VjoZPpocsq3qaOxqIlPCg";
+          axios({
+            async: true,
+            method: "get",
+            url: `https://script.google.com/macros/s/${this.apiID}/exec`,
+            headers: {
+              "Content-Type": "text/plain;charset=utf-8"
+            }
+          })
+            .then((res) => {
+              this.customersData = res.data.result;
+              alert("客戶資料讀取完成");
             })
             .catch((err) => {
-              console.log("寫入失敗");
+              console.log("讀取失敗");
             });
-        },
-        getParameter() {
-          let keys = Object.keys(this.parameter);
-          let values = Object.values(this.parameter);
-          let concatString = "";
-          let tempString='';
-          for (let index = 0; index < keys.length; index++) {
-            concatString += `${keys[index]}=${values[index]} `
-          }
-
-          tempString = concatString.trimEnd();
-          concatString = tempString.replaceAll(' ', '&')
-
-          return concatString
         }
       },
       //運算
-      computed: {},
+      computed: {
+        itemTextRow() {
+          return 1 + this.parameter.info.length / 13;
+        }
+      },
       //監聽
-      watch: {},
+      watch: {
+        itemSelect: function (value) {
+          switch (value) {
+            case "爐具":
+              this.secondItemOption = this.stoveOption;
+              break;
+            case "熱水器":
+              this.secondItemOption = this.waterOption;
+              break;
+            case "油煙機":
+              this.secondItemOption = [];
+              break;
+            case "流理臺":
+              this.secondItemOption = [];
+              break;
+            case "其他":
+              this.secondItemOption = [];
+              break;
+            default:
+              break;
+          }
+          this.secondItemSelect = this.secondItemOption[0];
+        },
+        secondItemSelect: function (val) {
+          if (this.itemSelect.length > 0 && val.length > 0)
+            this.parameter.item = `${this.itemSelect}-${val}`;
+        },
+        "parameter.name": function (val) {
+          this.customersTemp = this.customersData.filter(
+            (item) => item[0] == val
+          );
+        },
+        "parameter.address": function (val) {
+          if (this.parameter.name != "" && this.parameter.address != "")
+            this.customerTemp = this.customersData.filter(
+              (item) => item[0] == this.parameter.name && item[1] == val
+            );
+        }
+      },
       created() {
         let date = new Date();
         this.parameter.date = `${date.getFullYear()}/${(date.getMonth() + 1)
@@ -111,7 +343,11 @@
         if (date.getMonth() + 1 == 1 && date.getDay() == 1)
           alert("新的一年了請記得換一張新的工作表");
 
-          this.addNewWork()
+        this.getCustomers();
+
+        this.secondItemOption = this.stoveOption;
+        this.itemSelect = this.itemOption[0];
+        this.secondItemSelect = this.secondItemOption[0];
       }
     });
   </script>
