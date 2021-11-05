@@ -63,13 +63,43 @@
         bottom: -12rem;
         z-index: 2;
       }
+      .searchArea {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -45%);
+        height: 80vh;
+        width: 80vw;
+        background-color: antiquewhite;
+        box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+        padding: 1rem;
+        overflow: scroll;
+      }
+      tbody,
+      td,
+      tfoot,
+      th,
+      thead,
+      tr {
+        border: 1px black solid;
+        padding: 1px;
+      }
+      td {
+        padding: 2px 4px;
+        word-break: keep-all;
+      }
     </style>
   </head>
 
   <body>
     <div id="app">
       <div class="text-center">
-        <h1 class="my-4">每日工作紀錄</h1>
+        <h1 class="my-4">
+          每日工作紀錄<i
+            class="fas fa-search ps-2"
+            @click="showSearch=!showSearch"
+          ></i>
+        </h1>
         <p>日期&nbsp:&nbsp{{this.parameter.date}}</p>
         <div class="row">
           <div class="col-sm-12 col-md-6">
@@ -182,6 +212,30 @@
             <button @click="clickConfirm">確認</button>
           </div>
         </div>
+        <div class="searchArea text-center" v-show="showSearch">
+          <div class="input">
+            <p>
+              客戶姓名&nbsp:&nbsp<input
+                type="text"
+                v-model="searchCondition"
+              /><button class="m-2" @click="clickSearch">搜尋</button>
+            </p>
+          </div>
+          <table v-show="searchData.length>0">
+            <tr>
+              <th>日期</th>
+              <th>姓名</th>
+              <th>地址</th>
+              <th>類型</th>
+              <th>項目</th>
+              <th>說明</th>
+              <th>金額</th>
+            </tr>
+            <tr v-for="items in searchData">
+              <td v-for="item in items">{{item}}</td>
+            </tr>
+          </table>
+        </div>
       </div>
     </div>
   </body>
@@ -206,6 +260,9 @@
       //資料
       data: {
         apiID: "",
+        showSearch: false,
+        searchCondition: "",
+        searchData: [],
         parameter: {
           date: null,
           name: "",
@@ -232,11 +289,44 @@
       },
       //方法
       methods: {
+        clickSearch() {
+          this.apiID =
+            "AKfycbylh1bnIESzgu4Re-DdqsJKz-ORn_EEB7OeKhkgrcc5MmFafrrDvOycQS3GnMDBPfKw";
+          axios({
+            async: true,
+            method: "get",
+            url: `https://script.google.com/macros/s/${this.apiID}/exec`,
+            params: { condition: this.searchCondition },
+            headers: {
+              "Content-Type": "text/plain;charset=utf-8"
+            }
+          })
+            .then((res) => {
+              this.searchData = res.data.result;
+              if (this.searchData.length <= 0) {
+                alert("查無此人");
+              } else {
+                let temp = [];
+                this.searchData.forEach((item) => {
+                  item.splice(3, 2);
+                });
+              }
+            })
+            .catch((err) => {
+              alert("搜尋失敗");
+            });
+        },
         clickConfirm() {
           this.addNewWork();
 
-          if(this.customersData.filter(item=> item[0]==this.parameter.name&&item[1]==this.parameter.address).length==0){
-            alert('新客戶')
+          if (
+            this.customersData.filter(
+              (item) =>
+                item[0] == this.parameter.name &&
+                item[1] == this.parameter.address
+            ).length == 0
+          ) {
+            alert("新客戶");
             this.getCustomers();
           }
         },
@@ -336,9 +426,9 @@
       },
       created() {
         let date = new Date();
-        this.parameter.date = `${date.getFullYear()}/${(date.getMonth() + 1)
+        this.parameter.date = `${date.getFullYear()}_${(date.getMonth() + 1)
           .toString()
-          .padStart(2, 0)}/${date.getDay().toString().padStart(2, 0)}`;
+          .padStart(2, 0)}_${date.getDay().toString().padStart(2, 0)}`;
 
         if (date.getMonth() + 1 == 1 && date.getDay() == 1)
           alert("新的一年了請記得換一張新的工作表");
