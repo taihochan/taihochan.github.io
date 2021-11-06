@@ -1,448 +1,427 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>工作紀錄登記</title>
-    <!-- 載入Vue框架 -->
-    <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
-    <!-- 引用Bootstrap CSS Style -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We"
-      crossorigin="anonymous"
-    />
-    <!-- 引用Google Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap"
-      rel="stylesheet"
-    />
-    <!-- 引用FontAwesome -->
-    <script
-      src="https://kit.fontawesome.com/aaacc8f3a5.js"
-      crossorigin="anonymous"
-    ></script>
-    <style>
-      textarea {
-        resize: none;
-      }
-      input,
-      select {
-        height: 30px;
-        margin-bottom: 0.3rem;
-      }
-      .itemArea,
-      .input,
-      .radios {
-        display: flex;
-        align-items: flex-start;
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-      .itemArea {
-        margin-bottom: 0.3rem;
-      }
-      .radio {
-        display: flex;
-        align-items: center;
-        margin: 0 0.3rem;
-      }
-      .options {
-        position: absolute;
-        bottom: -12rem;
-        background-color: antiquewhite;
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        height: 13rem;
-        overflow: scroll;
-        bottom: -12rem;
-        z-index: 2;
-      }
-      .searchArea {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -45%);
-        height: 80vh;
-        width: 80vw;
-        background-color: antiquewhite;
-        box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
-        padding: 1rem;
-        overflow: scroll;
-      }
-      table{
-        min-width: 100%;
-      }
-      tbody,
-      td,
-      tfoot,
-      th,
-      thead,
-      tr {
-        border: 1px black solid;
-        padding: 1px;
-        background-color: whitesmoke;
-      }
-      td {
-        padding: 2px 4px;
-        word-break: keep-all;
-      }
-    </style>
-  </head>
 
-  <body>
-    <div id="app">
-      <div class="text-center">
-        <h1 class="my-4">
-          每日工作紀錄<i
-            class="fas fa-search ps-2"
-            @click="showSearch=!showSearch"
-          ></i>
-        </h1>
-        <p>日期&nbsp:&nbsp{{this.parameter.date}}</p>
-        <div class="row">
-          <div class="col-sm-12 col-md-6">
-            <div class="input">
-              <p>
-                姓名&nbsp:&nbsp <input type="text" v-model="parameter.name" />
-              </p>
-            </div>
-            <div class="input position-relative">
-              <p>
-                地址&nbsp:&nbsp<input
-                  @click="showAddress=customersTemp.length>0?true:false"
-                  type="text"
-                  v-model="parameter.address"
-                />
-              </p>
-              <div class="options" v-show="showAddress">
-                <span
-                  class="p-2"
-                  v-for="item in customersTemp"
-                  @click="clickAddress(item)"
-                  >{{item[1]}}</span
-                >
-              </div>
-            </div>
-            <div class="input position-relative">
-              <p>
-                電話&nbsp:&nbsp<input
-                  @click="showTel=customerTemp.length>0&&customerTemp[2].length>0?true:false"
-                  type="text"
-                  v-model="parameter.tel"
-                />
-              </p>
-              <div class="options" v-show="showTel">
-                <span
-                  class="p-2"
-                  v-for="item in customerTemp"
-                  @click="clickTel(item)"
-                  >{{item[2]}}</span
-                >
-              </div>
-            </div>
-            <div class="input position-relative">
-              <p>
-                手機&nbsp:&nbsp<input
-                  @click="showPhone=customerTemp.length>0&&customerTemp[3].length>0?true:false"
-                  type="text"
-                  v-model="parameter.phone"
-                />
-              </p>
-              <div class="options" v-show="showPhone">
-                <span
-                  class="p-2"
-                  v-for="item in customerTemp"
-                  @click="clickPhone(item)"
-                  >{{item[3]}}</span
-                >
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-12 col-md-6">
-            <div class="itemArea">
-              <div class="radios">
-                <div class="radio">
-                  <input
-                    type="radio"
-                    id="new"
-                    value="安裝"
-                    v-model="parameter.type"
-                  />
-                  <label for="new">安裝</label>
-                </div>
-                <div class="radio">
-                  <input
-                    type="radio"
-                    id="fix"
-                    value="維修"
-                    v-model="parameter.type"
-                  />
-                  <label for="fix">維修</label>
-                </div>
-              </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>工作紀錄登記</title>
+  <!-- 載入Vue框架 -->
+  <script src="https://unpkg.com/vue@2.6.14/dist/vue.js"></script>
+  <!-- 引用Bootstrap CSS Style -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous" />
+  <!-- 引用Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet" />
+  <!-- 引用FontAwesome -->
+  <script src="https://kit.fontawesome.com/aaacc8f3a5.js" crossorigin="anonymous"></script>
+  <style>
+    textarea {
+      resize: none;
+    }
 
-              <select v-model="itemSelect">
-                <template v-for="item in itemOption">
-                  <option>{{item}}</option>
-                </template>
-              </select>
-              <select v-model="secondItemSelect">
-                <template v-for="item in secondItemOption">
-                  <option>{{item}}</option>
-                </template>
-              </select>
-              <textarea
-                class="overflow-hidden"
-                v-model="parameter.info"
-                placeholder="品牌/型號/其他備註"
-                :rows="itemTextRow"
-                cols="27"
-              ></textarea>
-            </div>
-            <hr />
-            <div class="input mt-4">
-              <p>
-                金額&nbsp:&nbsp<input type="text" v-model="parameter.money" />
-              </p>
-            </div>
-          </div>
-          <div class="btn">
-            <button @click="clickConfirm">確認</button>
-          </div>
-        </div>
-        <div class="searchArea text-center" v-show="showSearch">
+    input,
+    select {
+      height: 30px;
+      margin-bottom: 0.3rem;
+    }
+
+    .itemArea,
+    .input,
+    .radios {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .itemArea {
+      margin-bottom: 0.3rem;
+    }
+
+    .radio {
+      display: flex;
+      align-items: center;
+      margin: 0 0.3rem;
+    }
+
+    .options {
+      position: absolute;
+      bottom: -12rem;
+      background-color: antiquewhite;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      height: 13rem;
+      overflow: scroll;
+      bottom: -12rem;
+      z-index: 2;
+    }
+
+    .searchArea {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -45%);
+      height: 80vh;
+      width: 80vw;
+      background-color: antiquewhite;
+      box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+      padding: 1rem;
+      overflow: scroll;
+    }
+
+    table {
+      min-width: 100%;
+    }
+
+    tbody,
+    td,
+    tfoot,
+    th,
+    thead,
+    tr {
+      border: 1px black solid;
+      padding: 1px;
+      background-color: whitesmoke;
+    }
+
+    td {
+      padding: 2px 4px;
+      word-break: keep-all;
+    }
+
+    .dateInput {
+      width: 3rem;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <div class="text-center">
+      <h1 class="my-4">
+        每日工作紀錄<i class="fas fa-search ps-2" @click="showSearch=!showSearch"></i>
+      </h1>
+      <p>日期&nbsp:&nbsp<input class="dateInput" type="text" v-model='year'>年<input class="dateInput" type="text"
+          v-model='month'>月<input class="dateInput" type="text" v-model='day'>號</input></p>
+      <div class="row">
+        <div class="col-sm-12 col-md-6">
           <div class="input">
             <p>
-              客戶姓名&nbsp:&nbsp<input
-                type="text"
-                v-model="searchCondition"
-              /><button class="m-2" @click="clickSearch">搜尋</button>
+              姓名&nbsp:&nbsp <input type="text" v-model="parameter.name" />
             </p>
           </div>
-          <table v-show="searchData.length>0">
-            <tr>
-              <th>日期</th>
-              <th>姓名</th>
-              <th>地址</th>
-              <th>類型</th>
-              <th>項目</th>
-              <th>說明</th>
-              <th>金額</th>
-            </tr>
-            <tr v-for="items in searchData">
-              <td v-for="item in items">{{item}}</td>
-            </tr>
-          </table>
+          <div class="input position-relative">
+            <p>
+              地址&nbsp:&nbsp<input @click="showAddress=customersTemp.length>0?true:false" type="text"
+                v-model="parameter.address" />
+            </p>
+            <div class="options" v-show="showAddress">
+              <span class="p-2" v-for="item in customersTemp" @click="clickAddress(item)">{{item[1]}}</span>
+            </div>
+          </div>
+          <div class="input position-relative">
+            <p>
+              電話&nbsp:&nbsp<input @click="showTel=customerTemp.length>0&&customerTemp[2].length>0?true:false"
+                type="text" v-model="parameter.tel" />
+            </p>
+            <div class="options" v-show="showTel">
+              <span class="p-2" v-for="item in customerTemp" @click="clickTel(item)">{{item[2]}}</span>
+            </div>
+          </div>
+          <div class="input position-relative">
+            <p>
+              手機&nbsp:&nbsp<input @click="showPhone=customerTemp.length>0&&customerTemp[3].length>0?true:false"
+                type="text" v-model="parameter.phone" />
+            </p>
+            <div class="options" v-show="showPhone">
+              <span class="p-2" v-for="item in customerTemp" @click="clickPhone(item)">{{item[3]}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12 col-md-6">
+          <div class="itemArea">
+            <div class="radios">
+              <div class="radio">
+                <input type="radio" id="new" value="安裝" v-model="parameter.type" />
+                <label for="new">安裝</label>
+              </div>
+              <div class="radio">
+                <input type="radio" id="fix" value="維修" v-model="parameter.type" />
+                <label for="fix">維修</label>
+              </div>
+            </div>
+
+            <select v-model="itemSelect">
+              <template v-for="item in itemOption">
+                <option>{{item}}</option>
+              </template>
+            </select>
+            <select v-model="secondItemSelect">
+              <template v-for="item in secondItemOption">
+                <option>{{item}}</option>
+              </template>
+            </select>
+            <textarea class="overflow-hidden" v-model="parameter.info" placeholder="品牌/型號/其他備註" :rows="itemTextRow"
+              cols="27"></textarea>
+          </div>
+          <hr />
+          <div class="input mt-4">
+            <p>
+              金額&nbsp:&nbsp<input type="text" v-model="parameter.money" />
+            </p>
+          </div>
+        </div>
+        <div class="btn">
+          <button @click="clickConfirm">確認</button>
         </div>
       </div>
+      <div class="searchArea text-center" v-show="showSearch">
+        <div class="input d-flex flex-column align-items-center">
+          <p>
+            客戶姓名&nbsp:&nbsp<input type="text" v-model="searchCondition" /><button class="m-2"
+              @click="clickSearch">搜尋</button>
+          </p>
+          <div class="radios">
+            <div class="radio">
+              <input type="radio" id="name" value="name" v-model="searchType" />
+              <label for="new">姓名</label>
+            </div>
+            <div class="radio">
+              <input type="radio" id="address" value="adress" v-model="searchType" />
+              <label for="fix">地址</label>
+            </div>
+          </div>
+        </div>
+        <table v-show="searchData.length>0">
+          <tr>
+            <th>日期</th>
+            <th>姓名</th>
+            <th>地址</th>
+            <th>類型</th>
+            <th>項目</th>
+            <th>說明</th>
+            <th>金額</th>
+          </tr>
+          <tr v-for="items in searchData">
+            <td v-for="item in items">{{item}}</td>
+          </tr>
+        </table>
+      </div>
     </div>
-  </body>
-  <!-- 引用axios -->
-  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-  <!-- 引用Boostrap Script -->
-  <script
-    src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
-    integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp"
-    crossorigin="anonymous"
-  ></script>
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"
-    integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/"
-    crossorigin="anonymous"
-  ></script>
-  <script>
-    // var clickMap = [];
-    var app = new Vue({
-      //載入位置
-      el: "#app",
-      //資料
-      data: {
-        apiID: "",
-        showSearch: false,
-        searchCondition: "",
-        searchData: [],
-        parameter: {
-          date: null,
-          name: "",
-          address: "",
-          tel: "",
-          phone: "",
-          item: "",
-          type: "維修",
-          info: "",
-          money: ""
-        },
-        customersData: [],
-        customersTemp: [],
-        customerTemp: [],
-        showAddress: false,
-        showTel: false,
-        showPhone: false,
-        itemSelect: "",
-        secondItemSelect: "",
-        itemOption: ["爐具", "熱水器", "油煙機", "流理臺", "其他"],
-        secondItemOption: [],
-        stoveOption: ["嵌爐", "檯面爐", "快炒爐", "鑄鐵爐", "快速爐"],
-        waterOption: ["強制排氣", "抗強風", "一般", "電熱爐"]
+  </div>
+</body>
+<!-- 引用axios -->
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<!-- 引用Boostrap Script -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"
+  integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js"
+  integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/" crossorigin="anonymous"></script>
+<script>
+  // var clickMap = [];
+  var app = new Vue({
+    //載入位置
+    el: "#app",
+    //資料
+    data: {
+      apiID: "",
+      showSearch: false,
+      searchCondition: "",
+      searchType: 'name',
+      searchData: [],
+      year: '',
+      month: '',
+      day: '',
+      parameter: {
+        date: null,
+        name: "",
+        address: "",
+        tel: "",
+        phone: "",
+        item: "",
+        type: "維修",
+        info: "",
+        money: ""
       },
-      //方法
-      methods: {
-        clickSearch() {
-          this.apiID =
-            "AKfycbylh1bnIESzgu4Re-DdqsJKz-ORn_EEB7OeKhkgrcc5MmFafrrDvOycQS3GnMDBPfKw";
-          axios({
-            async: true,
-            method: "get",
-            url: `https://script.google.com/macros/s/${this.apiID}/exec`,
-            params: { condition: this.searchCondition },
-            headers: {
-              "Content-Type": "text/plain;charset=utf-8"
-            }
-          })
-            .then((res) => {
-              this.searchData = res.data.result;
-              if (this.searchData.length <= 0) {
-                alert("查無此人");
-              } else {
-                let temp = [];
-                this.searchData.forEach((item) => {
-                  item.splice(3, 2);
-                });
-              }
-            })
-            .catch((err) => {
-              alert("搜尋失敗");
-            });
-        },
-        clickConfirm() {
-          this.addNewWork();
-
-          if (
-            this.customersData.filter(
-              (item) =>
-                item[0] == this.parameter.name &&
-                item[1] == this.parameter.address
-            ).length == 0
-          ) {
-            alert("新客戶");
-            this.getCustomers();
+      customersData: [],
+      customersTemp: [],
+      customerTemp: [],
+      showAddress: false,
+      showTel: false,
+      showPhone: false,
+      itemSelect: "",
+      secondItemSelect: "",
+      itemOption: ["爐具", "熱水器", "油煙機", "流理臺", "其他"],
+      secondItemOption: [],
+      stoveOption: ["嵌爐", "檯面爐", "快炒爐", "鑄鐵爐", "快速爐"],
+      waterOption: ["強制排氣", "抗強風", "一般", "電熱爐"]
+    },
+    //方法
+    methods: {
+      clickSearch() {
+        this.apiID =
+          "AKfycbylh1bnIESzgu4Re-DdqsJKz-ORn_EEB7OeKhkgrcc5MmFafrrDvOycQS3GnMDBPfKw";
+        axios({
+          async: true,
+          method: "get",
+          url: `https://script.google.com/macros/s/${this.apiID}/exec`,
+          params: {
+            condition: this.searchCondition,
+            type: this.searchType
+          },
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
           }
-        },
-        clickAddress(value) {
-          this.parameter.address = value[1];
-          this.showAddress = false;
-        },
-        clickTel(value) {
-          this.parameter.tel = value[2];
-          this.showTel = false;
-        },
-        clickPhone(value) {
-          this.parameter.phone = value[3];
-          this.showPhone = false;
-        },
-        addNewWork() {
-          this.apiID =
-            "AKfycbyKcBnPwW5rR39AQuFzbV-RY_vSpMqDgQK320LB4WY9KxYYsBSbIr9yFhmpvZIqNQkZ";
-          axios({
-            method: "post",
-            url: `https://script.google.com/macros/s/${this.apiID}/exec`,
-            data: this.parameter,
-            headers: {
-              "Content-Type": "text/plain;charset=utf-8"
+        })
+          .then((res) => {
+            this.searchData = res.data.result;
+            if (this.searchData.length <= 0) {
+              alert("查無此人");
+            } else {
+              let temp = [];
+              this.searchData.forEach((item) => {
+                item.splice(3, 2);
+              });
             }
           })
-            .then((res) => {
-              alert("登錄成功");
-            })
-            .catch((err) => {});
-        },
-        getCustomers() {
-          this.apiID =
-            "AKfycbxwHbEv0poVOqKdS0J4pLPK3hyFCpE4-WJ1yNvVLyNsrZnb2VjoZPpocsq3qaOxqIlPCg";
-          axios({
-            async: true,
-            method: "get",
-            url: `https://script.google.com/macros/s/${this.apiID}/exec`,
-            headers: {
-              "Content-Type": "text/plain;charset=utf-8"
-            }
-          })
-            .then((res) => {
-              this.customersData = res.data.result;
-              alert("客戶資料讀取完成");
-            })
-            .catch((err) => {
-              console.log("讀取失敗");
-            });
+          .catch((err) => {
+            alert("搜尋失敗");
+          });
+      },
+      clickConfirm() {
+        this.parameter.date = `${this.year}_${this.month}_${this.day}`
+
+        this.addNewWork();
+
+        if (
+          this.customersData.filter(
+            (item) =>
+              item[0] == this.parameter.name &&
+              item[1] == this.parameter.address
+          ).length == 0
+        ) {
+          alert("新客戶");
+          this.getCustomers();
         }
       },
-      //運算
-      computed: {
-        itemTextRow() {
-          return 1 + this.parameter.info.length / 13;
-        }
+      clickAddress(value) {
+        this.parameter.address = value[1];
+        this.showAddress = false;
       },
-      //監聽
-      watch: {
-        itemSelect: function (value) {
-          switch (value) {
-            case "爐具":
-              this.secondItemOption = this.stoveOption;
-              break;
-            case "熱水器":
-              this.secondItemOption = this.waterOption;
-              break;
-            case "油煙機":
-              this.secondItemOption = [];
-              break;
-            case "流理臺":
-              this.secondItemOption = [];
-              break;
-            case "其他":
-              this.secondItemOption = [];
-              break;
-            default:
-              break;
+      clickTel(value) {
+        this.parameter.tel = value[2];
+        this.showTel = false;
+      },
+      clickPhone(value) {
+        this.parameter.phone = value[3];
+        this.showPhone = false;
+      },
+      addNewWork() {
+        this.apiID =
+          "AKfycbyKcBnPwW5rR39AQuFzbV-RY_vSpMqDgQK320LB4WY9KxYYsBSbIr9yFhmpvZIqNQkZ";
+        axios({
+          method: "post",
+          url: `https://script.google.com/macros/s/${this.apiID}/exec`,
+          data: this.parameter,
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
           }
-          this.secondItemSelect = this.secondItemOption[0];
-        },
-        secondItemSelect: function (val) {
-          if (this.itemSelect.length > 0 && val.length > 0)
-            this.parameter.item = `${this.itemSelect}-${val}`;
-        },
-        "parameter.name": function (val) {
-          this.customersTemp = this.customersData.filter(
-            (item) => item[0] == val
-          );
-        },
-        "parameter.address": function (val) {
-          if (this.parameter.name != "" && this.parameter.address != "")
-            this.customerTemp = this.customersData.filter(
-              (item) => item[0] == this.parameter.name && item[1] == val
-            );
-        }
+        })
+          .then((res) => {
+            alert("登錄成功");
+          })
+          .catch((err) => { });
       },
-      created() {
-        let date = new Date();
-        this.parameter.date = `${date.getFullYear()}_${(date.getMonth() + 1)
-          .toString()
-          .padStart(2, 0)}_${date.getDay().toString().padStart(2, 0)}`;
-
-        if (date.getMonth() + 1 == 1 && date.getDay() == 1)
-          alert("新的一年了請記得換一張新的工作表");
-
-        this.getCustomers();
-
-        this.secondItemOption = this.stoveOption;
-        this.itemSelect = this.itemOption[0];
-        this.secondItemSelect = this.secondItemOption[0];
+      getCustomers() {
+        this.apiID =
+          "AKfycbxwHbEv0poVOqKdS0J4pLPK3hyFCpE4-WJ1yNvVLyNsrZnb2VjoZPpocsq3qaOxqIlPCg";
+        axios({
+          async: true,
+          method: "get",
+          url: `https://script.google.com/macros/s/${this.apiID}/exec`,
+          headers: {
+            "Content-Type": "text/plain;charset=utf-8"
+          }
+        })
+          .then((res) => {
+            this.customersData = res.data.result;
+            alert("客戶資料讀取完成");
+          })
+          .catch((err) => {
+            console.log("讀取失敗");
+          });
       }
-    });
-  </script>
+    },
+    //運算
+    computed: {
+      itemTextRow() {
+        return 1 + this.parameter.info.length / 13;
+      }
+    },
+    //監聽
+    watch: {
+      itemSelect: function (value) {
+        switch (value) {
+          case "爐具":
+            this.secondItemOption = this.stoveOption;
+            break;
+          case "熱水器":
+            this.secondItemOption = this.waterOption;
+            break;
+          case "油煙機":
+            this.secondItemOption = [];
+            break;
+          case "流理臺":
+            this.secondItemOption = [];
+            break;
+          case "其他":
+            this.secondItemOption = [];
+            break;
+          default:
+            break;
+        }
+        this.secondItemSelect = this.secondItemOption[0];
+      },
+      secondItemSelect: function (val) {
+        if (this.itemSelect.length > 0 && val.length > 0)
+          this.parameter.item = `${this.itemSelect}-${val}`;
+      },
+      "parameter.name": function (val) {
+        this.customersTemp = this.customersData.filter(
+          (item) => item[0] == val
+        );
+      },
+      "parameter.address": function (val) {
+        if (this.parameter.name != "" && this.parameter.address != "")
+          this.customerTemp = this.customersData.filter(
+            (item) => item[0] == this.parameter.name && item[1] == val
+          );
+      }
+    },
+    created() {
+      let date = new Date();
+      this.parameter.date = `${date.getFullYear() - 1911}_${(date.getMonth() + 1)
+        .toString()
+        .padStart(2, 0)}_${date.getDay().toString().padStart(2, 0)}`;
+      this.year = date.getFullYear() - 1911
+      this.month = date.getMonth() + 1
+      this.day = date.getDay().toString().padStart(2, 0)
+
+      if (date.getMonth() + 1 == 1 && date.getDay() == 1)
+        alert("新的一年了請記得換一張新的工作表");
+
+      this.getCustomers();
+
+      this.secondItemOption = this.stoveOption;
+      this.itemSelect = this.itemOption[0];
+      this.secondItemSelect = this.secondItemOption[0];
+    }
+  });
+</script>
+
 </html>
