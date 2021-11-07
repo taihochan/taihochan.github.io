@@ -209,13 +209,13 @@
               </div>
 
               <select v-model="itemSelect">
-                <template v-for="item in itemOption">
-                  <option>{{item}}</option>
+                <template v-for="(item, index) in itemOption">
+                  <option :disabled="index==0">{{item}}</option>
                 </template>
               </select>
               <select v-model="secondItemSelect">
-                <template v-for="item in secondItemOption">
-                  <option>{{item}}</option>
+                <template v-for="(item, index) in secondItemOption">
+                  <option :disabled="index==0">{{item}}</option>
                 </template>
               </select>
               <textarea class="overflow-hidden" v-model="parameter.info" placeholder="品牌/型號/其他備註" :rows="itemTextRow"
@@ -321,10 +321,10 @@
       showPhone: false,
       itemSelect: "",
       secondItemSelect: "",
-      itemOption: ["瓦斯爐", "熱水器", "油煙機", "流理臺", "其他"],
+      itemOption: ["廚具", "瓦斯爐", "熱水器", "油煙機", "流理臺", "其他"],
       secondItemOption: [],
-      stoveOption: ["檯爐", "嵌爐", "檯面爐"],
-      waterOption: ["強制排氣", "自然排氣", "電熱爐"],
+      stoveOption: ["項目", "檯爐", "嵌爐", "檯面爐"],
+      waterOption: ["項目", "強制排氣", "自然排氣", "電熱爐"],
       noOption: ['']
     },
     //方法
