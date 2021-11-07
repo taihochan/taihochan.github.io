@@ -125,134 +125,156 @@
     .pointer:hover {
       cursor: pointer;
     }
-    .searchArea label{
+
+    .searchArea label {
       font-size: 2rem;
+    }
+
+    .loading {
+      top: 0;
+      left: 0;
+      width: 99vw;
+      height: 100vh;
+      background-color: rgba(163, 161, 161, 0.658);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 2;
+    }
+
+    .loading p {
+      font-size: 5rem;
     }
   </style>
 </head>
 
 <body>
   <div id="app">
-    <div class="text-center">
-      <h1 class="my-4">
-        每日工作紀錄<i class="fas fa-search ps-2" @click="showSearch=!showSearch"></i>
-      </h1>
-      <p>日期&nbsp:&nbsp<input class="dateInput" type="text" v-model='year'>年<input class="dateInput" type="text"
-          v-model='month'>月<input class="dateInput" type="text" v-model='day'>號</input></p>
-      <div class="row">
-        <div class="col-md-12 col-lg-6">
-          <div class="input">
-            <p>
-              姓名&nbsp:&nbsp <input type="text" v-model="parameter.name" />
-            </p>
-          </div>
-          <div class="input position-relative">
-            <p>
-              地址&nbsp:&nbsp<input @click="showAddress=customersTemp.length>0?true:false" type="text"
-                v-model="parameter.address" />
-            </p>
-            <div class="options" v-show="showAddress">
-              <span class="p-2" v-for="item in customersTemp" @click="clickAddress(item)">{{item[1]}}</span>
+    <div class="position-relative">
+      <div class="loading position-absolute" v-show="loading">
+        <p>上傳資料中...</p>
+      </div>
+      <div class="text-center">
+        <h1 class="my-4">
+          每日工作紀錄<i class="fas fa-search ps-2" @click="showSearch=!showSearch"></i>
+        </h1>
+        <p>日期&nbsp:&nbsp<input class="dateInput" type="text" v-model='year'>年<input class="dateInput" type="text"
+            v-model='month'>月<input class="dateInput" type="text" v-model='day'>號</input></p>
+        <div class="row">
+          <div class="col-md-12 col-lg-6">
+            <div class="input">
+              <p>
+                姓名&nbsp:&nbsp <input type="text" v-model="parameter.name" />
+              </p>
+            </div>
+            <div class="input position-relative">
+              <p>
+                地址&nbsp:&nbsp<input @click="showAddress=customersTemp.length>0?true:false" type="text"
+                  v-model="parameter.address" />
+              </p>
+              <div class="options" v-show="showAddress">
+                <span class="p-2" v-for="item in customersTemp" @click="clickAddress(item)">{{item[1]}}</span>
+              </div>
+            </div>
+            <div class="input position-relative">
+              <p>
+                電話&nbsp:&nbsp<input @click="showTel=customerTemp.length>0&&customerTemp[0][2]!=''?true:false"
+                  type="text" v-model="parameter.tel" />
+              </p>
+              <div class="options" v-show="showTel">
+                <span class="p-2" v-for="item in customerTemp" @click="clickTel(item)">{{item[2]}}</span>
+              </div>
+            </div>
+            <div class="input position-relative">
+              <p>
+                手機&nbsp:&nbsp<input @click="showPhone=customerTemp.length>0&&customerTemp[0][3]!=''?true:false"
+                  type="text" v-model="parameter.phone" />
+              </p>
+              <div class="options" v-show="showPhone">
+                <span class="p-2" v-for="item in customerTemp" @click="clickPhone(item)">{{item[3]}}</span>
+              </div>
             </div>
           </div>
-          <div class="input position-relative">
-            <p>
-              電話&nbsp:&nbsp<input @click="showTel=customerTemp.length>0&&customerTemp[0][2]!=''?true:false" type="text"
-                v-model="parameter.tel" />
-            </p>
-            <div class="options" v-show="showTel">
-              <span class="p-2" v-for="item in customerTemp" @click="clickTel(item)">{{item[2]}}</span>
+          <div class="col-md-12 col-lg-6">
+            <div class="itemArea">
+              <div class="radios">
+                <div class="radio">
+                  <input type="radio" id="new" value="安裝" v-model="parameter.type" />
+                  <label for="new">安裝</label>
+                </div>
+                <div class="radio">
+                  <input type="radio" id="fix" value="維修" v-model="parameter.type" />
+                  <label for="fix">維修</label>
+                </div>
+              </div>
+
+              <select v-model="itemSelect">
+                <template v-for="item in itemOption">
+                  <option>{{item}}</option>
+                </template>
+              </select>
+              <select v-model="secondItemSelect">
+                <template v-for="item in secondItemOption">
+                  <option>{{item}}</option>
+                </template>
+              </select>
+              <textarea class="overflow-hidden" v-model="parameter.info" placeholder="品牌/型號/其他備註" :rows="itemTextRow"
+                cols="27"></textarea>
+            </div>
+            <hr />
+            <div class="input mt-4">
+              <p>
+                金額&nbsp:&nbsp<input type="text" v-model="parameter.money" />
+              </p>
             </div>
           </div>
-          <div class="input position-relative">
-            <p>
-              手機&nbsp:&nbsp<input @click="showPhone=customerTemp.length>0&&customerTemp[0][3]!=''?true:false"
-                type="text" v-model="parameter.phone" />
-            </p>
-            <div class="options" v-show="showPhone">
-              <span class="p-2" v-for="item in customerTemp" @click="clickPhone(item)">{{item[3]}}</span>
-            </div>
+          <div class="btn1">
+            <button @click="clickConfirm">確認</button>
           </div>
         </div>
-        <div class="col-md-12 col-lg-6">
-          <div class="itemArea">
+        <div class="searchArea text-center position-relative" v-show="showSearch">
+          <div class="close position-absolute pointer" @click="showSearch=false">
+            <p>x</p>
+          </div>
+          <div class="input d-flex flex-column align-items-center">
+            <p>
+              客戶資料&nbsp:&nbsp<input type="text" v-model="searchCondition" /><button class="m-2"
+                @click="clickSearch">搜尋</button>
+            </p>
             <div class="radios">
               <div class="radio">
-                <input type="radio" id="new" value="安裝" v-model="parameter.type" />
-                <label for="new">安裝</label>
+                <input type="radio" id="name" value="name" v-model="searchType" />
+                <label for="name">姓名</label>
               </div>
               <div class="radio">
-                <input type="radio" id="fix" value="維修" v-model="parameter.type" />
-                <label for="fix">維修</label>
+                <input type="radio" id="address" value="address" v-model="searchType" />
+                <label for="address">地址</label>
+              </div>
+              <div class="radio">
+                <input type="radio" id="tel" value="tel" v-model="searchType" />
+                <label for="tel">電話</label>
+              </div>
+              <div class="radio">
+                <input type="radio" id="phone" value="phone" v-model="searchType" />
+                <label for="phone">手機</label>
               </div>
             </div>
-
-            <select v-model="itemSelect">
-              <template v-for="item in itemOption">
-                <option>{{item}}</option>
-              </template>
-            </select>
-            <select v-model="secondItemSelect">
-              <template v-for="item in secondItemOption">
-                <option>{{item}}</option>
-              </template>
-            </select>
-            <textarea class="overflow-hidden" v-model="parameter.info" placeholder="品牌/型號/其他備註" :rows="itemTextRow"
-              cols="27"></textarea>
           </div>
-          <hr />
-          <div class="input mt-4">
-            <p>
-              金額&nbsp:&nbsp<input type="text" v-model="parameter.money" />
-            </p>
-          </div>
+          <table v-show="searchData.length>0">
+            <tr>
+              <th>日期</th>
+              <th>姓名</th>
+              <th>地址</th>
+              <th>類型</th>
+              <th>項目</th>
+              <th>說明</th>
+              <th>金額</th>
+            </tr>
+            <tr v-for="items in searchData">
+              <td v-for="item in items">{{item}}</td>
+            </tr>
+          </table>
         </div>
-        <div class="btn1">
-          <button @click="clickConfirm">確認</button>
-        </div>
-      </div>
-      <div class="searchArea text-center position-relative" v-show="showSearch">
-        <div class="close position-absolute pointer" @click="showSearch=false">
-          <p>x</p>
-        </div>
-        <div class="input d-flex flex-column align-items-center">
-          <p>
-            客戶資料&nbsp:&nbsp<input type="text" v-model="searchCondition" /><button class="m-2"
-              @click="clickSearch">搜尋</button>
-          </p>
-          <div class="radios">
-            <div class="radio">
-              <input type="radio" id="name" value="name" v-model="searchType" />
-              <label for="name">姓名</label>
-            </div>
-            <div class="radio">
-              <input type="radio" id="address" value="address" v-model="searchType" />
-              <label for="address">地址</label>
-            </div>
-            <div class="radio">
-              <input type="radio" id="tel" value="tel" v-model="searchType" />
-              <label for="tel">電話</label>
-            </div>
-            <div class="radio">
-              <input type="radio" id="phone" value="phone" v-model="searchType" />
-              <label for="phone">手機</label>
-            </div>
-          </div>
-        </div>
-        <table v-show="searchData.length>0">
-          <tr>
-            <th>日期</th>
-            <th>姓名</th>
-            <th>地址</th>
-            <th>類型</th>
-            <th>項目</th>
-            <th>說明</th>
-            <th>金額</th>
-          </tr>
-          <tr v-for="items in searchData">
-            <td v-for="item in items">{{item}}</td>
-          </tr>
-        </table>
       </div>
     </div>
   </div>
@@ -293,15 +315,17 @@
       customersData: [],
       customersTemp: [],
       customerTemp: [],
+      loading: false,
       showAddress: false,
       showTel: false,
       showPhone: false,
       itemSelect: "",
       secondItemSelect: "",
-      itemOption: ["爐具", "熱水器", "油煙機", "流理臺", "其他"],
+      itemOption: ["瓦斯爐", "熱水器", "油煙機", "流理臺", "其他"],
       secondItemOption: [],
-      stoveOption: ["嵌爐", "檯面爐", "快炒爐", "鑄鐵爐", "快速爐"],
-      waterOption: ["強制排氣", "抗強風", "一般", "電熱爐"]
+      stoveOption: ["檯爐", "嵌爐", "檯面爐"],
+      waterOption: ["強制排氣", "自然排氣", "電熱爐"],
+      noOption: ['']
     },
     //方法
     methods: {
@@ -336,6 +360,7 @@
           });
       },
       clickConfirm() {
+        this.loading = true;
         this.parameter.date = `${this.year}_${this.month}_${this.day}`
 
         this.addNewWork();
@@ -375,9 +400,12 @@
           }
         })
           .then((res) => {
+            this.loading = false
             alert("登錄成功");
           })
-          .catch((err) => { });
+          .catch((err) => {
+            this.loading = false
+          });
       },
       getCustomers() {
         this.apiID =
@@ -416,22 +444,22 @@
             this.secondItemOption = this.waterOption;
             break;
           case "油煙機":
-            this.secondItemOption = [];
+            this.secondItemOption = this.noOption;
             break;
           case "流理臺":
-            this.secondItemOption = [];
+            this.secondItemOption = this.noOption;
             break;
           case "其他":
-            this.secondItemOption = [];
+            this.secondItemOption = this.noOption;
             break;
           default:
             break;
         }
         this.secondItemSelect = this.secondItemOption[0];
+        this.parameter.item = `${this.itemSelect}-${this.secondItemSelect}`;
       },
       secondItemSelect: function (val) {
-        if (this.itemSelect.length > 0 && val.length > 0)
-          this.parameter.item = `${this.itemSelect}-${val}`;
+        this.parameter.item = `${this.itemSelect}-${val}`;
       },
       "parameter.name": function (val) {
         this.customersTemp = this.customersData.filter(
