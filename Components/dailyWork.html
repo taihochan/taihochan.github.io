@@ -18,6 +18,10 @@
   <!-- 引用FontAwesome -->
   <script src="https://kit.fontawesome.com/aaacc8f3a5.js" crossorigin="anonymous"></script>
   <style>
+    p {
+      font-size: 2rem;
+    }
+
     textarea {
       resize: none;
     }
@@ -94,8 +98,35 @@
     }
 
     .dateInput {
-      width: 3rem;
+      width: 5rem;
       text-align: center;
+    }
+
+    .close {
+      top: 0;
+      right: 0;
+      background-color: #cfcfcf;
+      border-radius: 100%;
+      width: 30px;
+      height: 30px;
+    }
+
+    .close p {
+      line-height: 17px;
+      font-size: 3rem;
+    }
+
+    .btn1 button {
+      width: 10rem;
+      height: 3rem;
+      font-size: 2rem;
+    }
+
+    .pointer:hover {
+      cursor: pointer;
+    }
+    .searchArea label{
+      font-size: 2rem;
     }
   </style>
 </head>
@@ -126,8 +157,8 @@
           </div>
           <div class="input position-relative">
             <p>
-              電話&nbsp:&nbsp<input @click="showTel=customerTemp.length>0&&customerTemp[2].length>0?true:false"
-                type="text" v-model="parameter.tel" />
+              電話&nbsp:&nbsp<input @click="showTel=customerTemp.length>0&&customerTemp[0][2]!=''?true:false" type="text"
+                v-model="parameter.tel" />
             </p>
             <div class="options" v-show="showTel">
               <span class="p-2" v-for="item in customerTemp" @click="clickTel(item)">{{item[2]}}</span>
@@ -135,7 +166,7 @@
           </div>
           <div class="input position-relative">
             <p>
-              手機&nbsp:&nbsp<input @click="showPhone=customerTemp.length>0&&customerTemp[3].length>0?true:false"
+              手機&nbsp:&nbsp<input @click="showPhone=customerTemp.length>0&&customerTemp[0][3]!=''?true:false"
                 type="text" v-model="parameter.phone" />
             </p>
             <div class="options" v-show="showPhone">
@@ -176,24 +207,35 @@
             </p>
           </div>
         </div>
-        <div class="btn">
+        <div class="btn1">
           <button @click="clickConfirm">確認</button>
         </div>
       </div>
-      <div class="searchArea text-center" v-show="showSearch">
+      <div class="searchArea text-center position-relative" v-show="showSearch">
+        <div class="close position-absolute pointer" @click="showSearch=false">
+          <p>x</p>
+        </div>
         <div class="input d-flex flex-column align-items-center">
           <p>
-            客戶姓名&nbsp:&nbsp<input type="text" v-model="searchCondition" /><button class="m-2"
+            客戶資料&nbsp:&nbsp<input type="text" v-model="searchCondition" /><button class="m-2"
               @click="clickSearch">搜尋</button>
           </p>
           <div class="radios">
             <div class="radio">
               <input type="radio" id="name" value="name" v-model="searchType" />
-              <label for="new">姓名</label>
+              <label for="name">姓名</label>
             </div>
             <div class="radio">
-              <input type="radio" id="address" value="adress" v-model="searchType" />
-              <label for="fix">地址</label>
+              <input type="radio" id="address" value="address" v-model="searchType" />
+              <label for="address">地址</label>
+            </div>
+            <div class="radio">
+              <input type="radio" id="tel" value="tel" v-model="searchType" />
+              <label for="tel">電話</label>
+            </div>
+            <div class="radio">
+              <input type="radio" id="phone" value="phone" v-model="searchType" />
+              <label for="phone">手機</label>
             </div>
           </div>
         </div>
@@ -244,7 +286,7 @@
         tel: "",
         phone: "",
         item: "",
-        type: "維修",
+        type: "安裝",
         info: "",
         money: ""
       },
@@ -407,12 +449,12 @@
       let date = new Date();
       this.parameter.date = `${date.getFullYear() - 1911}_${(date.getMonth() + 1)
         .toString()
-        .padStart(2, 0)}_${date.getDay().toString().padStart(2, 0)}`;
+        .padStart(2, 0)}_${date.getDate().toString().padStart(2, 0)}`;
       this.year = date.getFullYear() - 1911
       this.month = date.getMonth() + 1
-      this.day = date.getDay().toString().padStart(2, 0)
+      this.day = date.getDate().toString().padStart(2, 0)
 
-      if (date.getMonth() + 1 == 1 && date.getDay() == 1)
+      if (date.getMonth() + 1 == 1 && date.getDate() == 1)
         alert("新的一年了請記得換一張新的工作表");
 
       this.getCustomers();
