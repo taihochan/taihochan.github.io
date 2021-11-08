@@ -90,7 +90,7 @@
     tr {
       border: 1px black solid;
       padding: 1px;
-      background-color: whitesmoke;
+      background-color: #d1cece;
     }
 
     td {
@@ -130,6 +130,7 @@
     .searchArea label {
       font-size: 2rem;
     }
+    
 
     .loading {
       top: 0;
@@ -145,6 +146,12 @@
 
     .loading p {
       font-size: 5rem;
+    }
+    .evenRow{
+      background-color: rgb(240, 195, 136);
+    }
+    .oddRow{
+      background-color: whitesmoke;
     }
   </style>
 </head>
@@ -199,8 +206,8 @@
                   <th>說明</th>
                   <th>金額</th>
                 </tr>
-                <tr v-for="items in searchData">
-                  <td v-for="item in items">{{item}}</td>
+                <tr v-for="(items, index) in searchData">
+                  <td v-for="item in items" :class='{oddRow:index%2==1, evenRow:index%2==0}'>{{item}}</td>
                 </tr>
               </table>
             </div>
