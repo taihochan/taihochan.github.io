@@ -32,7 +32,10 @@
       margin-bottom: 0.3rem;
       max-width: 80%;
     }
-
+    
+    .input, hr{
+      width: 80%;
+    }
     .itemArea,
     .input,
     .radios {
@@ -41,7 +44,6 @@
       justify-content: center;
       flex-wrap: wrap;
     }
-
     .itemArea {
       margin-bottom: 0.3rem;
     }
@@ -173,7 +175,7 @@
               <!-- <div class="close  pointer position-absolute" @click.stop="showSearch=false">
                 <p>x</p>
               </div> -->
-              <div class="input d-flex flex-column align-items-center">
+              <div class="input w-100  d-flex flex-column align-items-center">
                 <p>
                   客戶資料&nbsp:&nbsp<input type="text" v-model="searchCondition" /><button class="m-2"
                     @click.stop="clickSearch">搜尋</button>
@@ -214,6 +216,7 @@
             </div>
             <div class="row">
           <div class="col-md-12 col-lg-6">
+            <div class="w-100 d-flex align-items-center flex-wrap flex-column">
             <div class="input">
               <p>
                 姓名&nbsp:&nbsp <input type="text" v-model="parameter.name" />
@@ -247,7 +250,9 @@
               </div>
             </div>
           </div>
+          </div>
           <div class="col-md-12 col-lg-6">
+            <div class="w-100 d-flex align-items-center flex-wrap flex-column">
             <div class="itemArea">
               <div class="radios">
                 <div class="radio">
@@ -280,6 +285,7 @@
               </p>
             </div>
           </div>
+        </div>
           <div class="btn1">
             <button @click.stop="clickConfirm">確認</button>
           </div>
