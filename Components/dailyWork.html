@@ -397,8 +397,6 @@
           alert("新客戶");
           this.getCustomers();
         }
-
-        this.parameter = this.resetData
       },
       clickAddress(value) {
         this.parameter.address = value[1];
@@ -429,6 +427,9 @@
           })
           .catch((err) => {
             this.loading = false
+          })
+          .finally(() => {
+            this.reset()
           });
       },
       getCustomers() {
@@ -455,7 +456,12 @@
         this.showAddress = false
         this.showTel = false
         this.showPhone = false
-
+      },
+      reset() {
+        this.parameter = { ... this.resetData }
+        this.secondItemOption = this.stoveOption;
+        this.itemSelect = this.itemOption[0];
+        this.secondItemSelect = this.secondItemOption[0];
       }
     },
     //運算
