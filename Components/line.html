@@ -20,6 +20,7 @@
   <body>
     <div id="app">
       <button @click="clickLogin">登入</button>
+      <button @click="clickInfo">測試</button>
     </div>
   </body>
   <!-- 引用Boostrap Script -->
@@ -33,25 +34,62 @@
     integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/"
     crossorigin="anonymous"
   ></script>
+  <!-- 引用axios -->
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script>
     var app = new Vue({
       //載入位置
       el: "#app",
       //資料
       data: {
+        parameter: {
+          grant_type: "authorization_code", //固定
+          code: "CODE",
+          redirect_uri: "https://taihochan.github.io/Components/line.html",
+          client_id: "1656635140",
+          client_secret: "ac4ad18b48a5f0ee9886adf89519ac32"
+        }
       },
       //方法
       methods: {
         clickLogin() {
-          let url = "https://access.line.me/oauth2/v2.1/authorize";
+          let url = "https://access.line.me/oauth2/v2.1/authorize"; //固定
           let clienId = "1656635140";
           let redirectUri = "https://taihochan.github.io/Components/line.html";
-          url += "?response_type=code";
+          let scope = "profile%20openid";
+          url += "?response_type=code"; //固定
           url += "&client_id=" + clienId;
           url += "&redirect_uri=" + redirectUri;
-          url += "&state=login";
-          url += "&scope=profile%20openid";
+          url += "&state=login"; //固定
+          url += "&scope=" + scope;
           window.location.href = url;
+        },
+        clickInfo() {
+          let temp = location.search;
+          console.log(temp)
+          console.log(
+            temp.substring(temp.indexOf("=") + 1, temp.indexOf("=") - 1)
+          );
+        },
+        getInfo() {
+          axios({
+            method: "post",
+            url: `https://api.line.me/oauth2/v2.1/token`,
+            data: this.parameter,
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            }
+          })
+            .then((res) => {
+              this.loading = false;
+              alert("登錄成功");
+            })
+            .catch((err) => {
+              this.loading = false;
+            })
+            .finally(() => {
+              this.reset();
+            });
         }
       },
       //運算
