@@ -66,10 +66,9 @@
         },
         clickInfo() {
           let temp = location.search;
-          console.log(temp)
-          console.log(
-            temp.substring(temp.indexOf("=") + 1, temp.indexOf("&") - 1)
-          );
+          let code = temp.substring(temp.indexOf("=") + 1, temp.indexOf("&"));
+          this.parameter.code = code;
+          this.getInfo();
         },
         getInfo() {
           axios({
@@ -78,18 +77,15 @@
             data: this.parameter,
             headers: {
               "Content-Type": "application/x-www-form-urlencoded"
-            }
+            },
+            data: this.parameter
           })
             .then((res) => {
-              this.loading = false;
+              console.log(res);
               alert("登錄成功");
             })
-            .catch((err) => {
-              this.loading = false;
-            })
-            .finally(() => {
-              this.reset();
-            });
+            .catch((err) => {})
+            .finally(() => {});
         }
       },
       //運算
