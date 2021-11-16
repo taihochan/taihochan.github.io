@@ -14,13 +14,36 @@
       integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We"
       crossorigin="anonymous"
     />
-    <style></style>
+    <style>
+      p {
+        word-break: break-all;
+      }
+    </style>
   </head>
 
   <body>
     <div id="app">
-      <button @click="clickLogin">登入</button>
-      <button @click="clickInfo">測試</button>
+      <div class="text-center mt-5">
+        <button @click="clickLogin">登入</button>
+        <button @click="clickInfo">取得Token</button>
+        <button @click="clickGet">取得用戶資訊</button>
+      </div>
+      <div class="container">
+        <div class="row flex-nowrap">
+          <div
+            v-if="tokenShow"
+            class="token col-6 border border-3 border-info m-1"
+          >
+            <p v-for="(value, key) in token">{{key}} : {{value}}</p>
+          </div>
+          <div
+            v-if="infoShow"
+            class="info col-6 border border-3 border-info m-1"
+          >
+            <p v-for="(value, key) in info">{{key}} : {{value}}</p>
+          </div>
+        </div>
+      </div>
     </div>
   </body>
   <!-- 引用Boostrap Script -->
@@ -42,7 +65,11 @@
       el: "#app",
       //資料
       data: {
-        parameter: {}
+        route: window.location.hash,
+        token: [],
+        info: [],
+        tokenShow: false,
+        infoShow: false
       },
       //方法
       methods: {
@@ -54,34 +81,62 @@
           url += "?response_type=code"; //固定
           url += "&client_id=" + clienId;
           url += "&redirect_uri=" + redirectUri;
-          url += "&state=login"; //固定
+          url += "&state=login"; //state應亂數產生避免偽造
           url += "&scope=" + scope;
           window.location.href = url;
         },
         clickInfo() {
           let temp = location.search;
           let code = temp.substring(temp.indexOf("=") + 1, temp.indexOf("&"));
-          this.parameter = {
-            "grant_type": "authorization_code", //固定
-            "client_id": "1656635140",
-            "code": code,
-            "redirect_uri": "https://taihochan.github.io/Components/line.html",
-            "client_secret": "ac4ad18b48a5f0ee9886adf89519ac32"
-          };
-          this.getInfo();
+          let params = new URLSearchParams();
+          params.append("grant_type", "authorization_code");
+          params.append("client_id", "1656635140");
+          params.append("code", code);
+          params.append(
+            "redirect_uri",
+            "https://taihochan.github.io/Components/line.html"
+          );
+          params.append("client_secret", "ac4ad18b48a5f0ee9886adf89519ac32");
+          this.getInfo(params);
         },
-        getInfo() {
+        clickGet() {
+          let params = new URLSearchParams();
+          params.append("client_id", "1656635140");
+          params.append(
+            "id_token",
+            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2FjY2Vzcy5saW5lLm1lIiwic3ViIjoiVTE2OTk2MTUwOGVkMDY2OWFkYTZkZTY0YTQ3ZGM4ZjY4IiwiYXVkIjoiMTY1NjYzNTE0MCIsImV4cCI6MTYzNzA0NTI0NCwiaWF0IjoxNjM3MDQxNjQ0LCJhbXIiOlsibGluZXNzbyJdLCJuYW1lIjoiSGUgQ2hpZW4ifQ.3k5ScuTz15MibdDWleg-3ZF3smBjgLm3FxSUpzxQ0UI"
+          );
+          axios({
+            method: "post",
+            url: `https://api.line.me/oauth2/v2.1/verify`,
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            data: params
+          })
+            .then((res) => {
+              console.log(res);
+              this.info = res.data;
+              alert("用戶資訊取得成功");
+              this.infoShow = true;
+            })
+            .catch((err) => {})
+            .finally(() => {});
+        },
+        getInfo(params) {
           axios({
             method: "post",
             url: `https://api.line.me/oauth2/v2.1/token`,
             headers: {
               "Content-Type": "application/x-www-form-urlencoded"
             },
-            data: this.parameter
+            data: params
           })
             .then((res) => {
               console.log(res);
-              alert("登錄成功");
+              this.token = res.data;
+              alert("token取得成功");
+              this.tokenShow = true;
             })
             .catch((err) => {})
             .finally(() => {});
