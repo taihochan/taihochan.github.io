@@ -20,7 +20,6 @@
   <body>
     <div id="app">
       <button @click="clickLogin">登入</button>
-      <a href="https://access.line.me/oauth2/v2.1/authorizeresponse_type=code&client_id=1656635140&redirect_uri=https://taihochan.github.io/Components/line.html&state=login&scope=openid%20profile">12314125</a>
     </div>
   </body>
   <!-- 引用Boostrap Script -->
@@ -40,7 +39,6 @@
       el: "#app",
       //資料
       data: {
-        loginUri: ""
       },
       //方法
       methods: {
@@ -48,13 +46,12 @@
           let url = "https://access.line.me/oauth2/v2.1/authorize";
           let clienId = "1656635140";
           let redirectUri = "https://taihochan.github.io/Components/line.html";
-          url += "response_type=code";
+          url += "?response_type=code";
           url += "&client_id=" + clienId;
           url += "&redirect_uri=" + redirectUri;
           url += "&state=login";
           url += "&scope=profile%20openid";
-          console.log(url)
-          this.loginUri = url;
+          window.location.href = url;
         }
       },
       //運算
