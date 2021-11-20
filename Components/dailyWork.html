@@ -228,13 +228,13 @@
         <div class="row">
           <div class="col-12 col-lg-6">
             <div class="w-100 d-flex align-items-center flex-wrap flex-column">
-              <div class="input">
-                <p>
+              <div class="input w-100">
+                <p class="w-100">
                   姓名&nbsp:&nbsp <input type="text" v-model="parameter.name" />
                 </p>
               </div>
-              <div class="input position-relative">
-                <p>
+              <div class="input position-relative w-100">
+                <p class="w-100">
                   地址&nbsp:&nbsp<input @click.stop="showAddress=customersTemp.length>0?true:false" type="text"
                     v-model="parameter.address" />
                 </p>
@@ -242,8 +242,8 @@
                   <span class="p-2" v-for="item in customersTemp" @click.stop="clickAddress(item)">{{item[1]}}</span>
                 </div>
               </div>
-              <div class="input position-relative">
-                <p>
+              <div class="input position-relative w-100">
+                <p class="w-100">
                   電話&nbsp:&nbsp<input @click.stop="showTel=customerTemp.length>0&&customerTemp[0][2]!=''?true:false"
                     type="text" v-model="parameter.tel" />
                 </p>
@@ -251,8 +251,8 @@
                   <span class="p-2" v-for="item in customerTemp" @click.stop="clickTel(item)">{{item[2]}}</span>
                 </div>
               </div>
-              <div class="input position-relative">
-                <p>
+              <div class="input position-relative w-100">
+                <p class="w-100">
                   手機&nbsp:&nbsp<input @click.stop="showPhone=customerTemp.length>0&&customerTemp[0][3]!=''?true:false"
                     type="text" v-model="parameter.phone" />
                 </p>
