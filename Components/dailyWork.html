@@ -528,7 +528,7 @@
       // 送出後重整資料為空
       reset() {
         this.parameter = { ... this.resetData }
-        this.typeInfoTemp = { ... this.resetType }
+        this.typeInfoTemp = JSON.parse(JSON.stringify(this.resetType))
       },
       // 按下增加減少的動作
       typeInfo(key, index) {
