@@ -414,7 +414,7 @@
       },
       //送出資料
       clickConfirm() {
-        const regx = /\b(,|，|、)\b/g //replace用的驗證, 是否為逗號或頓號
+        const regx = /(,|，|、)/g //replace用的驗證, 是否為逗號或頓號
         this.loading = true;
         this.parameter.date = `${this.year}_${this.month}_${this.day}`
         let itemTemp = '';
