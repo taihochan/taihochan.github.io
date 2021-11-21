@@ -176,7 +176,7 @@
       <div class="loading position-absolute" v-show="loading">
         <p>上傳資料中...</p>
       </div>
-      <div class="text-center position-relative" style='height:100%' >
+      <div class="text-center position-relative" style='height:100%'>
         <h1 class="my-4">
           每日工作紀錄<i class="fas fa-search ps-2" @click.stop="showSearch=!showSearch"></i>
         </h1>
@@ -215,6 +215,8 @@
               <th>日期</th>
               <th>姓名</th>
               <th>地址</th>
+              <th>電話</th>
+              <th>手機</th>
               <th>類型</th>
               <th>項目</th>
               <th>說明</th>
@@ -392,18 +394,21 @@
             this.searchData = res.data.result;
             if (this.searchData.length <= 0) {
               alert("查無此人");
-            } else {
-              let temp = [];
-              this.searchData.forEach((item) => {
-                item.splice(3, 2);
-              });
             }
+            // 搜尋表格是否顯示電話手機
+            //  else {
+            //   let temp = [];
+            //   this.searchData.forEach((item) => {
+            //     item.splice(3, 2);
+            //   });
+            // }
           })
           .catch((err) => {
             alert("搜尋失敗");
           });
       },
       clickConfirm() {
+        const regx = /\b(,|、)\b/g //replace用的驗證, 是否為逗號或頓號
         this.loading = true;
         this.parameter.date = `${this.year}_${this.month}_${this.day}`
         let itemTemp = '';
@@ -431,6 +436,10 @@
         this.parameter.item = itemTemp
         this.parameter.info = infoTemp
         this.parameter.type = typeTemp
+
+        this.parameter.name = `="${this.parameter.name.replaceAll(regx, '"&char(10)&"')}"`
+        this.parameter.phone = `="${this.parameter.phone.replaceAll(regx, '"&char(10)&"')}"`
+        this.parameter.tel = `="${this.parameter.tel.replaceAll(regx, '"&char(10)&"')}"`
 
         this.addNewWork();
 
@@ -558,13 +567,13 @@
     watch: {
       "parameter.name": function (val) {
         this.customersTemp = this.customersData.filter(
-          (item) => item[0] == val
+          (item) => item[0].includes(val)
         );
       },
       "parameter.address": function (val) {
         if (this.parameter.name != "" && this.parameter.address != "")
           this.customerTemp = this.customersData.filter(
-            (item) => item[0] == this.parameter.name && item[1] == val
+            (item) => item[0].includes(this.parameter.name) && item[1] == val
           );
       }
     },
