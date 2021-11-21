@@ -227,89 +227,92 @@
             </tr>
           </table>
         </div>
-        <div class="row">
-          <div class="col-12 col-lg-6">
-            <div class="w-100 d-flex align-items-center flex-wrap flex-column">
-              <div class="input w-100">
-                <p class="w-100">
-                  姓名&nbsp:&nbsp <input type="text" v-model="parameter.name" />
-                </p>
-              </div>
-              <div class="input position-relative w-100">
-                <p class="w-100">
-                  地址&nbsp:&nbsp<input @click.stop="showAddress=customersTemp.length>0?true:false" type="text"
-                    v-model="parameter.address" />
-                </p>
-                <div class="options" v-show="showAddress">
-                  <span class="p-2" v-for="item in customersTemp" @click.stop="clickAddress(item)">{{item[1]}}</span>
+        <div class="container">
+          <div class="row">
+            <span style="color:red">姓名和電話以及手機輸入，如有「、」「，」「,」上傳後將自動換行</span>
+            <div class="col-12 col-lg-6">
+              <div class="w-100 d-flex align-items-center flex-wrap flex-column">
+                <div class="input w-100">
+                  <p class="w-100">
+                    姓名&nbsp:&nbsp <input type="text" v-model="parameter.name" />
+                  </p>
                 </div>
-              </div>
-              <div class="input position-relative w-100">
-                <p class="w-100">
-                  電話&nbsp:&nbsp<input @click.stop="showTel=customerTemp.length>0&&customerTemp[0][2]!=''?true:false"
-                    type="text" v-model="parameter.tel" />
-                </p>
-                <div class="options" v-show="showTel">
-                  <span class="p-2" v-for="item in customerTemp" @click.stop="clickTel(item)">{{item[2]}}</span>
-                </div>
-              </div>
-              <div class="input position-relative w-100">
-                <p class="w-100">
-                  手機&nbsp:&nbsp<input @click.stop="showPhone=customerTemp.length>0&&customerTemp[0][3]!=''?true:false"
-                    type="text" v-model="parameter.phone" />
-                </p>
-                <div class="options" v-show="showPhone">
-                  <span class="p-2" v-for="item in customerTemp" @click.stop="clickPhone(item)">{{item[3]}}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-12 col-lg-6">
-            <div class="w-100 d-flex align-items-center flex-wrap flex-column">
-              <div class="itemArea">
-
-                <div class="item" v-for="(item, itemIndex) in typeInfoTemp">
-                  <div class="radios">
-                    <div class="radio">
-                      <input type="radio" id="new" value="安裝" v-model="typeInfoTemp[itemIndex].type" />
-                      <label for="new">安裝</label>
-                    </div>
-                    <div class="radio">
-                      <input type="radio" id="fix" value="維修" v-model="typeInfoTemp[itemIndex].type" />
-                      <label for="fix">維修</label>
-                    </div>
+                <div class="input position-relative w-100">
+                  <p class="w-100">
+                    地址&nbsp:&nbsp<input @click.stop="showAddress=customersTemp.length>0?true:false" type="text"
+                      v-model="parameter.address" />
+                  </p>
+                  <div class="options" v-show="showAddress">
+                    <span class="p-2" v-for="item in customersTemp" @click.stop="clickAddress(item)">{{item[1]}}</span>
                   </div>
-
-                  <select v-model="typeInfoTemp[itemIndex].itemSelect"
-                    @change='itemSelectChange(typeInfoTemp[itemIndex].itemSelect, itemIndex)'>
-                    <template v-for="(item, index) in itemOption">
-                      <option :disabled="index==0">{{item}}</option>
-                    </template>
-                  </select>
-                  <select v-model="typeInfoTemp[itemIndex].secondItemSelect">
-                    <template v-for="(item, index) in secondItemOption[itemIndex]">
-                      <option :disabled="index==0">{{item}}</option>
-                    </template>
-                  </select>
-                  <textarea class="overflow-hidden" v-model="typeInfoTemp[itemIndex].info" placeholder="品牌/型號/其他備註"
-                    :rows="itemTextRow(itemIndex)" cols="27"></textarea>
-                  <button class="btn-primary" @click.stop="typeInfo('add', itemIndex)" v-if="itemIndex == 0">增加</button>
-                  <button class="btn-success" @click.stop="typeInfo('reduce', itemIndex)" v-else>刪除</button>
+                </div>
+                <div class="input position-relative w-100">
+                  <p class="w-100">
+                    電話&nbsp:&nbsp<input @click.stop="showTel=customerTemp.length>0&&customerTemp[0][2]!=''?true:false"
+                      type="text" v-model="parameter.tel" />
+                  </p>
+                  <div class="options" v-show="showTel">
+                    <span class="p-2" v-for="item in customerTemp" @click.stop="clickTel(item)">{{item[2]}}</span>
+                  </div>
+                </div>
+                <div class="input position-relative w-100">
+                  <p class="w-100">
+                    手機&nbsp:&nbsp<input @click.stop="showPhone=customerTemp.length>0&&customerTemp[0][3]!=''?true:false"
+                      type="text" v-model="parameter.phone" />
+                  </p>
+                  <div class="options" v-show="showPhone">
+                    <span class="p-2" v-for="item in customerTemp" @click.stop="clickPhone(item)">{{item[3]}}</span>
+                  </div>
                 </div>
               </div>
-              <hr />
-              <div class="input mt-4">
-                <p>
-                  金額&nbsp:&nbsp<input type="text" v-model="parameter.money" />
-                </p>
+            </div>
+            <div class="col-12 col-lg-6">
+              <div class="w-100 d-flex align-items-center flex-wrap flex-column">
+                <div class="itemArea">
+
+                  <div class="item" v-for="(item, itemIndex) in typeInfoTemp">
+                    <div class="radios">
+                      <div class="radio">
+                        <input type="radio" id="new" value="安裝" v-model="typeInfoTemp[itemIndex].type" />
+                        <label for="new">安裝</label>
+                      </div>
+                      <div class="radio">
+                        <input type="radio" id="fix" value="維修" v-model="typeInfoTemp[itemIndex].type" />
+                        <label for="fix">維修</label>
+                      </div>
+                    </div>
+
+                    <select v-model="typeInfoTemp[itemIndex].itemSelect"
+                      @change='itemSelectChange(typeInfoTemp[itemIndex].itemSelect, itemIndex)'>
+                      <template v-for="(item, index) in itemOption">
+                        <option :disabled="index==0">{{item}}</option>
+                      </template>
+                    </select>
+                    <select v-model="typeInfoTemp[itemIndex].secondItemSelect">
+                      <template v-for="(item, index) in secondItemOption[itemIndex]">
+                        <option :disabled="index==0">{{item}}</option>
+                      </template>
+                    </select>
+                    <textarea class="overflow-hidden" v-model="typeInfoTemp[itemIndex].info" placeholder="品牌/型號/其他備註"
+                      :rows="itemTextRow(itemIndex)" cols="27"></textarea>
+                    <button class="btn-primary" @click.stop="typeInfo('add', itemIndex)"
+                      v-if="itemIndex == 0">增加</button>
+                    <button class="btn-success" @click.stop="typeInfo('reduce', itemIndex)" v-else>刪除</button>
+                  </div>
+                </div>
+                <hr />
+                <div class="input mt-4">
+                  <p>
+                    金額&nbsp:&nbsp<input type="text" v-model="parameter.money" />
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="btn1">
-            <button @click.stop="clickConfirm">確認</button>
+            <div class="btn1">
+              <button @click.stop="clickConfirm">確認</button>
+            </div>
           </div>
         </div>
-
       </div>
     </div>
   </div>
@@ -357,7 +360,8 @@
           secondItemSelect: ''
         }
       ],
-      resetData: [],// 上傳後清空資料用的空資料      
+      resetData: [],// 上傳後清空資料用的空資料    
+      resetType: [],//上船後清空項目用的空資料  
       customersData: [],//存取客戶名單
       customersTemp: [],//根據輸入姓名篩選出來的客戶名單
       customerTemp: [],//根據輸入姓名及地址篩選出來的客戶名單
@@ -375,6 +379,7 @@
     },
     //方法
     methods: {
+      //按下搜尋
       clickSearch() {
         this.apiID =
           "AKfycbylh1bnIESzgu4Re-DdqsJKz-ORn_EEB7OeKhkgrcc5MmFafrrDvOycQS3GnMDBPfKw";
@@ -407,8 +412,9 @@
             alert("搜尋失敗");
           });
       },
+      //送出資料
       clickConfirm() {
-        const regx = /\b(,|、)\b/g //replace用的驗證, 是否為逗號或頓號
+        const regx = /\b(,|，|、)\b/g //replace用的驗證, 是否為逗號或頓號
         this.loading = true;
         this.parameter.date = `${this.year}_${this.month}_${this.day}`
         let itemTemp = '';
@@ -454,18 +460,22 @@
           this.getCustomers();
         }
       },
+      //按下下拉式地址選項, value為整個data, 地址在1的位置
       clickAddress(value) {
         this.parameter.address = value[1];
         this.showAddress = false;
       },
+      //按下下拉式電話選項, value為整個data, 電話在2的位置
       clickTel(value) {
         this.parameter.tel = value[2];
         this.showTel = false;
       },
+      //按下下拉式手機選項, value為整個data, 手機在3的位置
       clickPhone(value) {
         this.parameter.phone = value[3];
         this.showPhone = false;
       },
+      //按下送出資料後, 會再整理過再上傳
       addNewWork() {
         this.apiID =
           "AKfycbyKcBnPwW5rR39AQuFzbV-RY_vSpMqDgQK320LB4WY9KxYYsBSbIr9yFhmpvZIqNQkZ";
@@ -488,6 +498,7 @@
             this.reset()
           });
       },
+      //載入頁面時取得客戶資料以便輸入時可取得快速選項
       getCustomers() {
         this.apiID =
           "AKfycbxwHbEv0poVOqKdS0J4pLPK3hyFCpE4-WJ1yNvVLyNsrZnb2VjoZPpocsq3qaOxqIlPCg";
@@ -507,19 +518,19 @@
             console.log("讀取失敗");
           });
       },
+      // 關掉全部的提示show
       showOff() {
         this.showSearch = false
         this.showAddress = false
         this.showTel = false
         this.showPhone = false
       },
+      // 送出後重整資料為空
       reset() {
         this.parameter = { ... this.resetData }
-        this.secondItemOption.length = 1;
-        this.secondItemOption[0] = this.stoveOption;
-        this.typeInfoTemp[0].itemSelect = this.itemOption[0];
-        this.typeInfoTemp[0].secondItemSelect = this.secondItemOption[0][0];
+        this.typeInfoTemp = { ... this.resetType }
       },
+      // 按下增加減少的動作
       typeInfo(key, index) {
         if (key == 'add') {
           this.secondItemOption.push(this.stoveOption)
@@ -535,9 +546,11 @@
           this.typeInfoTemp.splice(index, 1)
         }
       },
+      //動態增減備註的欄位空間
       itemTextRow(index) {
         return 1 + this.typeInfoTemp[index].info.length / 13;
       },
+      //根據大項目動態選擇品項的選項
       itemSelectChange(value, index) {
         switch (value) {
           case "瓦斯爐":
@@ -595,7 +608,8 @@
       this.typeInfoTemp[0].itemSelect = this.itemOption[0];
       this.typeInfoTemp[0].secondItemSelect = this.secondItemOption[0][0];
 
-      this.resetData = { ...this.parameter }
+      this.resetData = JSON.parse(JSON.stringify(this.parameter))
+      this.resetType = JSON.parse(JSON.stringify(this.typeInfoTemp))
     }
   });
 </script>
