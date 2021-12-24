@@ -232,10 +232,13 @@
             <span style="color:red">姓名和電話以及手機輸入，如有「、」「，」「 , 」上傳後將自動換行</span>
             <div class="col-12 col-lg-6">
               <div class="w-100 d-flex align-items-center flex-wrap flex-column">
-                <div class="input w-100">
+                <div class="input position-relative w-100">
                   <p class="w-100">
                     姓名&nbsp:&nbsp <input type="text" v-model="parameter.name" />
                   </p>
+                  <div class="options" v-show="showName">
+                    <span class="p-2" v-for="item in customersTemp" @click.stop="clickName(item)">{{item[0]}}</span>
+                  </div>
                 </div>
                 <div class="input position-relative w-100">
                   <p class="w-100">
@@ -366,6 +369,7 @@
       customersTemp: [],//根據輸入姓名篩選出來的客戶名單
       customerTemp: [],//根據輸入姓名及地址篩選出來的客戶名單
       loading: false,//載入畫面
+      showName:false,
       showAddress: false,//如果根據姓名篩選出來的客戶具備資料則顯示快選地址
       showTel: false,//如果根據姓名及地址篩出來的客戶具備資料則顯示快選家電
       showPhone: false,//如果根據姓名及地址篩出來的客戶具備資料則顯示快選手機
@@ -448,17 +452,11 @@
         this.parameter.tel = `="${this.parameter.tel.replaceAll(regx, '"&char(10)&"')}"`
 
         this.addNewWork();
-
-        if (
-          this.customersData.filter(
-            (item) =>
-              item[0] == this.parameter.name &&
-              item[1] == this.parameter.address
-          ).length == 0
-        ) {
-          alert("新客戶");
-          this.getCustomers();
-        }
+      },
+      clickName(value){
+        this.tempName = value[0];
+        this.parameter.name = value[0];
+        this.showName = false;
       },
       //按下下拉式地址選項, value為整個data, 地址在1的位置
       clickAddress(value) {
@@ -490,6 +488,10 @@
           .then((res) => {
             this.loading = false
             alert("登錄成功");
+            if (res.data.isRepeat==false) {
+              alert("新客戶");
+              this.getCustomers();
+            }
           })
           .catch((err) => {
             this.loading = false
@@ -512,6 +514,11 @@
         })
           .then((res) => {
             this.customersData = res.data.result;
+            for(let i=0; i<this.customersData.length;i++){
+              this.customersData[i][0]= this.customersData[i][0].replaceAll('\n',',')
+              this.customersData[i][2]= this.customersData[i][2].replaceAll('\n',',')
+              this.customersData[i][3]= this.customersData[i][3].replaceAll('\n',',')
+            }
             alert("客戶資料讀取完成");
           })
           .catch((err) => {
@@ -520,6 +527,7 @@
       },
       // 關掉全部的提示show
       showOff() {
+        this.showName = false
         this.showSearch = false
         this.showAddress = false
         this.showTel = false
@@ -582,6 +590,7 @@
         this.customersTemp = this.customersData.filter(
           (item) => item[0].includes(val)
         );
+        if(this.customersTemp.length>0&&this.tempName!=this.parameter.name&&this.parameter.name!='')this.showName=true
       },
       "parameter.address": function (val) {
         if (this.parameter.name != "" && this.parameter.address != "")
