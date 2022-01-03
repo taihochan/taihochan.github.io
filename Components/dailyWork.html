@@ -15,9 +15,17 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   <!-- 引用FontAwesome -->
   <script src="https://kit.fontawesome.com/aaacc8f3a5.js" crossorigin="anonymous"></script>
   <style>
+    body{
+      background-color: #78bdfffa;
+      font-family: 'Roboto', sans-serif;
+    }
+    input{
+      border: none;
+    }
     p {
       font-size: 2rem;
     }
@@ -37,7 +45,10 @@
     hr {
       width: 80%;
     }
-
+    .notice{
+      padding-top: 1rem;
+      border-top: 1px solid gray;
+    }
     .itemArea,
     .input,
     .radios,
@@ -129,6 +140,11 @@
       width: 10rem;
       height: 3rem;
       font-size: 2rem;
+      background-color: rgb(0, 252, 97);
+      border: 2px solid green;
+      border-top: none;
+      border-left: none;
+      margin-bottom: 3rem;
     }
 
     .pointer:hover {
@@ -167,6 +183,13 @@
       text-align: justify;
       white-space: pre;
     }
+    .search-btn{
+      background-color: rgb(255, 174, 0);
+      font-size: 1.3rem;
+      padding: 0 1rem;
+      border-top: none;
+      border-left: none;
+    }
   </style>
 </head>
 
@@ -177,7 +200,7 @@
         <p>上傳資料中...</p>
       </div>
       <div class="text-center position-relative" style='height:100%'>
-        <h1 class="my-4">
+        <h1 class="my-4 mt-0">
           每日工作紀錄<i class="fas fa-search ps-2" @click.stop="showSearch=!showSearch"></i>
         </h1>
         <p>日期&nbsp:&nbsp<input class="dateInput" type="text" v-model='year'>年<input class="dateInput" type="text"
@@ -188,7 +211,7 @@
               </div> -->
           <div class="input w-100  d-flex flex-column align-items-center">
             <p class="w-100">
-              客戶資料&nbsp:&nbsp<input type="text" v-model="searchCondition" /><button class="m-2"
+              客戶資料&nbsp:&nbsp<input type="text" v-model="searchCondition" /><button class="m-2 search-btn"
                 @click.stop="clickSearch">搜尋</button>
             </p>
             <div class="radios">
@@ -229,12 +252,12 @@
         </div>
         <div class="container-fluid">
           <div class="row">
-            <span style="color:red">姓名和電話以及手機輸入，如有「、」「，」「 , 」上傳後將自動換行</span>
+            <span class="notice" style="color:red">姓名和電話以及手機輸入，如有「、」「，」「 , 」上傳後將自動換行</span>
             <div class="col-12 col-lg-6">
               <div class="w-100 d-flex align-items-center flex-wrap flex-column">
                 <div class="input position-relative w-100">
                   <p class="w-100">
-                    姓名&nbsp:&nbsp <input type="text" v-model="parameter.name" />
+                    姓名&nbsp:&nbsp<input type="text" v-model="parameter.name" />
                   </p>
                   <div class="options" v-show="showName">
                     <span class="p-2" v-for="item in customersTemp" @click.stop="clickName(item)">{{item[0]}}</span>
@@ -385,6 +408,12 @@
     methods: {
       //按下搜尋
       clickSearch() {
+        let tempCondition='';
+        if(this.searchCondition==''){
+          tempCondition='all'
+        }else{
+          tempCondition = this.searchCondition
+        }
         this.apiID =
           "AKfycbylh1bnIESzgu4Re-DdqsJKz-ORn_EEB7OeKhkgrcc5MmFafrrDvOycQS3GnMDBPfKw";
         axios({
@@ -392,7 +421,7 @@
           method: "get",
           url: `https://script.google.com/macros/s/${this.apiID}/exec`,
           params: {
-            condition: this.searchCondition,
+            condition: tempCondition,
             type: this.searchType
           },
           headers: {
