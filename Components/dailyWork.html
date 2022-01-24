@@ -92,7 +92,7 @@
       left: 50%;
       transform: translate(-50%, -45%);
       height: 80vh;
-      width: 80vw;
+      width: 95vw;
       background-color: antiquewhite;
       box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
       padding: 1rem;
@@ -128,19 +128,18 @@
       text-align: center;
     }
 
-    /* .close {
+    .close {
       top: 0;
       right: 0;
-      background-color: #cfcfcf;
-      border-radius: 100%;
-      width: 30px;
-      height: 30px;
+     
     }
 
     .close p {
-      line-height: 17px;
-      font-size: 3rem;
-    } */
+     font: normal bold 25px/17px Noto Sanc TC;
+     margin: 0;
+     padding: 0.5rem;
+     background-color: #cfcfcf;
+    }
 
     .btn1 button {
       width: 10rem;
@@ -225,9 +224,9 @@
         <p>日期&nbsp:&nbsp<input class="dateInput" type="text" v-model='year'>年<input class="dateInput" type="text"
             v-model='month'>月<input class="dateInput" type="text" v-model='day'>號</input></p>
         <div class="searchArea text-center position-absolute" v-show="showSearch" @click.stop="showSearch=true">
-          <!-- <div class="close  pointer position-absolute" @click.stop="showSearch=false">
-                <p>x</p>
-              </div> -->
+          <div class="close  pointer position-absolute" @click.stop="showSearch=false">
+                <p>關閉</p>
+              </div>
           <div class="input w-100  d-flex flex-column align-items-center">
             <p class="w-100">
               客戶資料&nbsp:&nbsp<input type="text" v-model="searchCondition" /><button class="mx-2 search-btn"
