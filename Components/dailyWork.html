@@ -18,6 +18,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   <!-- 引用FontAwesome -->
   <script src="https://kit.fontawesome.com/aaacc8f3a5.js" crossorigin="anonymous"></script>
+  <!-- 引用element.js -->
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
   <style>
     body{
       background-color: #78bdfffa;
@@ -104,7 +107,6 @@
     table {
       min-width: 100%;
     }
-
     tbody,
     td,
     tfoot,
@@ -175,17 +177,30 @@
     .loading p {
       font-size: 5rem;
     }
-
+    .el-table{
+      color:black
+    }
+    .el-table th.el-table__cell{
+      background: #d1cece;
+      color:black
+    }
     .evenRow {
-      background-color: rgb(240, 195, 136);
+      background: rgb(240, 195, 136)!important;
       text-align: justify;
       white-space: pre;
     }
+    .evenRow td {
+      background: rgb(240, 195, 136)!important;
+      
+    }
 
     .oddRow {
-      background-color: whitesmoke;
+      background: whitesmoke!important;
       text-align: justify;
       white-space: pre;
+    }
+    .oddRow td{
+      background: whitesmoke!important;
     }
     .search-btn{
       background-color: rgb(255, 174, 0);
@@ -237,7 +252,7 @@
               </div>
             </div>
           </div>
-          <table v-show="searchData.length>0">
+          <!-- <table v-show="searchData.length>0">
             <tr>
               <th>日期</th>
               <th>姓名</th>
@@ -252,7 +267,57 @@
             <tr v-for="(items, index) in searchData">
               <td v-for="item in items" :class='{oddRow:index%2==1, evenRow:index%2==0}'>{{item}}</td>
             </tr>
-          </table>
+          </table> -->
+          <el-table v-show="searchData.length>0" :data='searchData' height="350" border style="width: 100%" :row-class-name="tableRowClassName">
+            <el-table-column
+            fixed
+            prop="0"
+            label="日期"
+            width="150">
+          </el-table-column>
+          <el-table-column
+          fixed
+          prop="1"
+          label="姓名"
+          width="150">
+        </el-table-column>
+          <el-table-column
+          prop="2"
+          label="地址"
+          width="150">
+        </el-table-column>
+          <el-table-column
+          prop="3"
+          label="電話"
+          width="150">
+        </el-table-column>
+          <el-table-column
+          prop="4"
+          label="手機"
+          width="150">
+        </el-table-column>
+          <el-table-column
+          prop="5"
+          label="類型"
+          width="150">
+        </el-table-column>
+          <el-table-column
+          prop="6"
+          label="項目"
+          width="150">
+        </el-table-column>
+          <el-table-column
+          prop="7"
+          label="說明"
+          width="150">
+        </el-table-column>
+          <el-table-column
+          prop="8"
+          label="金額"
+          width="150">
+        </el-table-column>
+       
+          </el-table>
         </div>
         <div class="container-fluid">
           <div class="row">
@@ -410,6 +475,14 @@
     },
     //方法
     methods: {
+      tableRowClassName({row, rowIndex}) {
+        if (rowIndex %2 == 1) {
+          return 'oddRow';
+        } else if (rowIndex %2 == 0) {
+          return 'evenRow';
+        }
+        return '';
+      },
       //按下搜尋
       clickSearch() {
         let tempCondition='';
