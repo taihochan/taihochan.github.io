@@ -22,13 +22,15 @@
   <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
   <script src="https://unpkg.com/element-ui/lib/index.js"></script>
   <style>
-    body{
+    body {
       background-color: #78bdfffa;
       font-family: 'Roboto', sans-serif;
     }
-    input{
+
+    input {
       border: none;
     }
+
     p {
       font-size: 2rem;
     }
@@ -48,10 +50,12 @@
     hr {
       width: 80%;
     }
-    .notice{
+
+    .notice {
       padding-top: 1rem;
       border-top: 1px solid gray;
     }
+
     .itemArea,
     .input,
     .radios,
@@ -90,7 +94,7 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%,-50%);
+      transform: translate(-50%, -50%);
       height: 98vh;
       width: 98vw;
       background-color: antiquewhite;
@@ -101,12 +105,15 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
+
     .searchArea::-webkit-scrollbar {
       display: none;
     }
+
     table {
       min-width: 100%;
     }
+
     tbody,
     td,
     tfoot,
@@ -131,14 +138,14 @@
     .close {
       top: 0;
       right: 0;
-     
+
     }
 
     .close p {
-     font: normal bold 25px/17px Noto Sanc TC;
-     margin: 0;
-     padding: 0.5rem;
-     background-color: #cfcfcf;
+      font: normal bold 25px/17px Noto Sanc TC;
+      margin: 0;
+      padding: 0.5rem;
+      background-color: #cfcfcf;
     }
 
     .btn1 button {
@@ -176,37 +183,49 @@
     .loading p {
       font-size: 5rem;
     }
-    .el-table{
-      color:black
+
+    .el-table {
+      color: black
     }
-    .el-table th.el-table__cell{
+
+    .el-table th.el-table__cell {
       background: #d1cece;
-      color:black
+      color: black
     }
+
     .evenRow {
-      background: rgb(240, 195, 136)!important;
+      background: rgb(240, 195, 136) !important;
       text-align: justify;
       white-space: pre;
     }
+
     .evenRow td {
-      background: rgb(240, 195, 136)!important;
-      
+      background: rgb(240, 195, 136) !important;
+
     }
 
     .oddRow {
-      background: whitesmoke!important;
+      background: whitesmoke !important;
       text-align: justify;
       white-space: pre;
     }
-    .oddRow td{
-      background: whitesmoke!important;
+
+    .oddRow td {
+      background: whitesmoke !important;
     }
-    .search-btn{
+
+    .search-btn {
       background-color: rgb(255, 174, 0);
       font-size: 1.3rem;
       padding: 0 1rem;
       border-top: none;
       border-left: none;
+    }
+
+    .el-table .cell {
+      white-space: pre;
+      word-break: keep-all;
+      text-overflow: initial;
     }
   </style>
 </head>
@@ -225,8 +244,8 @@
             v-model='month'>月<input class="dateInput" type="text" v-model='day'>號</input></p>
         <div class="searchArea text-center position-absolute" v-show="showSearch" @click.stop="showSearch=true">
           <div class="close  pointer position-absolute" @click.stop="showSearch=false">
-                <p>關閉</p>
-              </div>
+            <p>關閉</p>
+          </div>
           <div class="input w-100  d-flex flex-column align-items-center">
             <p class="w-100">
               客戶資料&nbsp:&nbsp<input type="text" v-model="searchCondition" /><button class="mx-2 search-btn"
@@ -267,61 +286,27 @@
               <td v-for="item in items" :class='{oddRow:index%2==1, evenRow:index%2==0}'>{{item}}</td>
             </tr>
           </table> -->
-          <el-table v-show="searchData.length>0" :data='searchData' height="350" border style="width: 100%" :row-class-name="tableRowClassName" fit>
-            <el-table-column
-            fixed
-            prop="0"
-            label="日期"
-            >
-          </el-table-column>
-          <el-table-column
-          fixed
-          prop="1"
-          label="姓名"
-          >
-        </el-table-column>
-          <el-table-column
-          prop="2"
-          label="地址"
-          width='250'
-          >
-        </el-table-column>
-          <el-table-column
-          prop="3"
-          label="電話"
-          width='120'
-          >
-        </el-table-column>
-          <el-table-column
-          prop="4"
-          label="手機"
-          width='120'
-          >
-        </el-table-column>
-          <el-table-column
-          prop="5"
-          label="類型"
-          >
-        </el-table-column>
-          <el-table-column
-          prop="6"
-          label="項目"
-          width='130'
-          >
-        </el-table-column>
-          <el-table-column
-          prop="7"
-          label="說明"
-          width='250'
-          >
-        </el-table-column>
-          <el-table-column
-          prop="8"
-          label="金額"
-          width='100'
-          >
-        </el-table-column>
-       
+          <el-table v-show="searchData.length>0" :data='searchData' height="80vh" border style="width: 100%"
+            :row-class-name="tableRowClassName" fit>
+            <el-table-column fixed prop="1" label="姓名" width='170'>
+            </el-table-column>
+            <el-table-column prop="0" label="日期" width='120'>
+            </el-table-column>
+            <el-table-column prop="2" label="地址" width='250'>
+            </el-table-column>
+            <el-table-column prop="3" label="電話" width='120'>
+            </el-table-column>
+            <el-table-column prop="4" label="手機" width='120'>
+            </el-table-column>
+            <el-table-column prop="5" label="類型">
+            </el-table-column>
+            <el-table-column prop="6" label="項目" width='130'>
+            </el-table-column>
+            <el-table-column prop="7" label="說明" width='250'>
+            </el-table-column>
+            <el-table-column prop="8" label="金額" width='100'>
+            </el-table-column>
+
           </el-table>
         </div>
         <div class="container-fluid">
@@ -466,7 +451,7 @@
       customersTemp: [],//根據輸入姓名篩選出來的客戶名單
       customerTemp: [],//根據輸入姓名及地址篩選出來的客戶名單
       loading: false,//載入畫面
-      showName:false,
+      showName: false,
       showAddress: false,//如果根據姓名篩選出來的客戶具備資料則顯示快選地址
       showTel: false,//如果根據姓名及地址篩出來的客戶具備資料則顯示快選家電
       showPhone: false,//如果根據姓名及地址篩出來的客戶具備資料則顯示快選手機
@@ -480,20 +465,20 @@
     },
     //方法
     methods: {
-      tableRowClassName({row, rowIndex}) {
-        if (rowIndex %2 == 1) {
+      tableRowClassName({ row, rowIndex }) {
+        if (rowIndex % 2 == 1) {
           return 'oddRow';
-        } else if (rowIndex %2 == 0) {
+        } else if (rowIndex % 2 == 0) {
           return 'evenRow';
         }
         return '';
       },
       //按下搜尋
       clickSearch() {
-        let tempCondition='';
-        if(this.searchCondition==''){
-          tempCondition='all'
-        }else{
+        let tempCondition = '';
+        if (this.searchCondition == '') {
+          tempCondition = 'all'
+        } else {
           tempCondition = this.searchCondition
         }
         this.apiID =
@@ -564,7 +549,7 @@
 
         this.addNewWork();
       },
-      clickName(value){
+      clickName(value) {
         this.tempName = value[0];
         this.parameter.name = value[0];
         this.showName = false;
@@ -599,7 +584,7 @@
           .then((res) => {
             this.loading = false
             alert("登錄成功");
-            if (res.data.isRepeat==false) {
+            if (res.data.isRepeat == false) {
               alert("新客戶");
               this.getCustomers();
             }
@@ -625,10 +610,10 @@
         })
           .then((res) => {
             this.customersData = res.data.result;
-            for(let i=0; i<this.customersData.length;i++){
-              this.customersData[i][0]= this.customersData[i][0].replaceAll('\n',',')
-              this.customersData[i][2]= this.customersData[i][2].replaceAll('\n',',')
-              this.customersData[i][3]= this.customersData[i][3].replaceAll('\n',',')
+            for (let i = 0; i < this.customersData.length; i++) {
+              this.customersData[i][0] = this.customersData[i][0].replaceAll('\n', ',')
+              this.customersData[i][2] = this.customersData[i][2].replaceAll('\n', ',')
+              this.customersData[i][3] = this.customersData[i][3].replaceAll('\n', ',')
             }
             alert("客戶資料讀取完成");
           })
@@ -701,7 +686,7 @@
         this.customersTemp = this.customersData.filter(
           (item) => item[0].includes(val)
         );
-        if(this.customersTemp.length>0&&this.tempName!=this.parameter.name&&this.parameter.name!='')this.showName=true
+        if (this.customersTemp.length > 0 && this.tempName != this.parameter.name && this.parameter.name != '') this.showName = true
       },
       "parameter.address": function (val) {
         if (this.parameter.name != "" && this.parameter.address != "")
