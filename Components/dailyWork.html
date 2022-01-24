@@ -90,7 +90,7 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -45%);
+      transform: translate(-50%,-50%);
       height: 98vh;
       width: 98vw;
       background-color: antiquewhite;
@@ -213,11 +213,11 @@
 
 <body>
   <div id="app">
-    <div class="position-relative p-5" style='height:100vh' @click='showOff'>
+    <div class="position-relative" style='height:100vh' @click='showOff'>
       <div class="loading position-absolute" v-show="loading">
         <p>上傳資料中...</p>
       </div>
-      <div class="text-center position-relative" style='height:100%'>
+      <div class="text-center position-relative p-5" style='height:100%'>
         <h1 class="my-4 mt-0">
           每日工作紀錄<i class="fas fa-search ps-2" @click.stop="showSearch=!showSearch"></i>
         </h1>
