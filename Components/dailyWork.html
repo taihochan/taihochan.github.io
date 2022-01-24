@@ -390,7 +390,7 @@
                       </template>
                     </select>
                     <textarea class="overflow-hidden" v-model="typeInfoTemp[itemIndex].info" placeholder="品牌/型號/其他備註"
-                      :rows="itemTextRow(itemIndex)" cols="27"></textarea>
+                      :rows="itemTextRow(itemIndex)" cols="28"></textarea>
                     <button class="btn-primary" @click.stop="typeInfo('add', itemIndex)"
                       v-if="itemIndex == 0">增加</button>
                     <button class="btn-success" @click.stop="typeInfo('reduce', itemIndex)" v-else>刪除</button>
