@@ -73,6 +73,9 @@
       },
       //方法
       methods: {
+        receiveMessage(e) {
+          console.warn(':::receiveMessage:::', e);
+        },
         clickLogin() {
           let url = "https://access.line.me/oauth2/v2.1/authorize"; //固定
           let clienId = "1656635140";
@@ -141,6 +144,15 @@
             .catch((err) => {})
             .finally(() => {});
         }
+      },
+      beforeMount() {
+        window.removeEventListener('message', this.receiveMessage);
+      },
+      mounted() {
+        // 監聽 iframe 呼叫事件
+        window.addEventListener('message', e => {
+        this.receiveMessage(e);
+        });
       },
       //運算
       computed: {}
