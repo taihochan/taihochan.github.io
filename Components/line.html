@@ -154,7 +154,8 @@
         this.receiveMessage(e);
         });
         const command = {
-          type: 'getUserInfo'
+          key: 'getUserInfo',
+          type: 'post'
         };
         parent.postMessage(JSON.stringify(command), '*');
       },
