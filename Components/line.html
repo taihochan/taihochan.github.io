@@ -153,10 +153,10 @@
         window.addEventListener('message', e => {
         this.receiveMessage(e);
         });
-        // const command = {
-        //   type: 'getUserInfo'
-        // };
-        // parent.postMessage(JSON.stringify(command), '*');
+        const command = {
+          type: 'getUserInfo'
+        };
+        parent.postMessage(JSON.stringify(command), '*');
       },
       //運算
       computed: {}
