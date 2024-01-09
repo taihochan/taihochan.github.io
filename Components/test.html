@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<!-- EIP2016/dpqrcode.jsp -->
+
+
+<html:html>
+
+<head>
+	<script type="text/javascript">
+
+	window.addEventListener('message', receiveMessage);
+	
+	function receiveMessage(val){
+		//console.warn('===receiveAppMessage work===', val)
+		let qrcodeValue = JSON.parse(val)
+		alert(JSON.stringify(val));
+		alert('==== key = [' + qrcodeValue.key + ']');
+		alert('==== url = [' + qrcodeValue.url + ']');
+
+		window.location.href = qrcodeValue.url + '&lalekey=' + qrcodeValue.key + '&memID=' + 'MEMAUTO0002';
+	}
+		
+	function openQrcode() {
+
+		const isIOS = () => {
+			let agent = navigator.userAgent
+			return agent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)
+		}
+		const command = {
+			command: 'openQRcode',
+			data: '掃描 QR Code'
+		}
+
+		if (isIOS()) {
+			window.webkit.messageHandlers.laleIm.postMessage(JSON.stringify(command))
+		} else {
+			window.laleIm.postMessage(JSON.stringify(command))
+		}  
+	}
+
+    var console = {
+    panel: $(parent.document.body).append('<div>'),
+    log: function(m){
+        this.panel.prepend('<div>'+m+'</div>');
+    }       
+};
+console.log('message');
+		    
+	openQrcode(); 
+
+	</script>
+</head>
+
+<body class="gray-bg login_bg_image">
+<!--  
+<p>TEST</p>
+<input style='height:100px' type="button" value="qrcode111" onClick="openQrcode()"/>
+-->
+</body>
+</html:html>
