@@ -8,10 +8,9 @@
 <head>
 	<script type="text/javascript">
 
-	window.addEventListener('message', receiveMessage);
 	
 	function receiveMessage(val){
-		//console.warn('===receiveAppMessage work===', val)
+		console.warn('===receiveAppMessage work===', val)
 		let qrcodeValue = JSON.parse(val)
 		alert(JSON.stringify(val));
 		alert('==== key = [' + qrcodeValue.key + ']');
@@ -19,6 +18,7 @@
 
 		window.location.href = qrcodeValue.url + '&lalekey=' + qrcodeValue.key + '&memID=' + 'MEMAUTO0002';
 	}
+	window.addEventListener('message', receiveMessage);
 		
 	function openQrcode() {
 
