@@ -39,6 +39,10 @@
 	}
 
 	function getUser() {
+		const isIOS = () => {
+			let agent = navigator.userAgent
+			return agent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)
+		}
 		let command = {
           		type: 'getUserInfo',
           		method: 'post'
