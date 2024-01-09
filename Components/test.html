@@ -22,9 +22,6 @@
 	window.addEventListener('message', receiveMessage);
 		
 	function openQrcode() {
-		var tmp = document.querySelector('.test')
-		tmp.innerText = 'openQR'
-
 		const isIOS = () => {
 			let agent = navigator.userAgent
 			return agent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)
