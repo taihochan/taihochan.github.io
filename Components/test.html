@@ -35,13 +35,21 @@
 			window.webkit.messageHandlers.laleIm.postMessage(JSON.stringify(command))
 		} else {
 			window.laleIm.postMessage(JSON.stringify(command))
-		} 
-		command = {
+		}
+	}
+
+	function getUser() {
+		let command = {
           		type: 'getUserInfo',
           		method: 'post'
         	};
-        	parent.postMessage(JSON.stringify(command), '*');
-	}   
+        	if (isIOS()) {
+			window.webkit.messageHandlers.laleIm.postMessage(JSON.stringify(command))
+		} else {
+			window.laleIm.postMessage(JSON.stringify(command))
+		} 
+	}
+		
 	openQrcode(); 
 
 	
@@ -53,5 +61,6 @@
  
 <p class="test">TEST</p>
 <input style='height:100px' type="button" value="qrcode111" onClick="openQrcode()"/>
+<input style='height:100px' type="button" value="qrcode111" onClick="getUser()"/>
 </body>
 </html:html>
