@@ -14,7 +14,7 @@
 		console.warn('===receiveAppMessage work===', val)
 		let qrcodeValue = JSON.parse(val)
 		var tmp = document.querySelector('.test')
-		tmp.innerHTML = qrcodeValue
+		tmp.innerText = val
 		alert(JSON.stringify(val));
 		alert('==== key = [' + qrcodeValue.key + ']');
 		alert('==== url = [' + qrcodeValue.url + ']');
@@ -25,7 +25,7 @@
 		
 	function openQrcode() {
 		var tmp = document.querySelector('.test')
-		tmp.innerHTML = 'openQR'
+		tmp.innerText = 'openQR'
 
 		const isIOS = () => {
 			let agent = navigator.userAgent
