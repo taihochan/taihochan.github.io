@@ -12,7 +12,7 @@
 	
 	function receiveMessage(val){
 		console.warn('===receiveAppMessage work===', val)
-		let qrcodeValue = JSON.parse(val)
+		let qrcodeValue = JSON.parse(val.data)
 		var tmp = document.querySelector('.test')
 		tmp.innerText = val
 		alert(JSON.stringify(val));
