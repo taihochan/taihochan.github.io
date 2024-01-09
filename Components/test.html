@@ -40,9 +40,16 @@
 			window.webkit.messageHandlers.laleIm.postMessage(JSON.stringify(command))
 		} else {
 			window.laleIm.postMessage(JSON.stringify(command))
-		}  
+		} 
+		const command = {
+          		type: 'getUserInfo',
+          		method: 'post'
+        		};
+        	parent.postMessage(JSON.stringify(command), '*');
 	}   
 	openQrcode(); 
+
+	
 
 	</script>
 </head>
