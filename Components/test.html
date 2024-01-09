@@ -22,36 +22,20 @@
 	window.addEventListener('message', receiveMessage);
 		
 	function openQrcode() {
-		const isIOS = () => {
-			let agent = navigator.userAgent
-			return agent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)
-		}
+		console.dir('testt', window)
 		let command = {
 			command: 'openQRcode',
 			data: '掃描 QR Code'
 		}
-
-		if (isIOS()) {
-			window.webkit.messageHandlers.laleIm.postMessage(JSON.stringify(command))
-		} else {
-			window.laleIm.postMessage(JSON.stringify(command))
-		}
+		parent.postMessage(JSON.stringify(command), '*');
 	}
 
 	function getUser() {
-		const isIOS = () => {
-			let agent = navigator.userAgent
-			return agent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)
-		}
 		let command = {
           		type: 'getUserInfo',
           		method: 'post'
         	};
-        	if (isIOS()) {
-			window.webkit.messageHandlers.laleIm.postMessage(JSON.stringify(command))
-		} else {
-			window.laleIm.postMessage(JSON.stringify(command))
-		} 
+        	parent.postMessage(JSON.stringify(command), '*');
 	}
 		
 	openQrcode(); 
