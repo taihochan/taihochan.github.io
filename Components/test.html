@@ -11,7 +11,9 @@
 	
 	function receiveMessage(val){
 		console.warn('===receiveAppMessage work===', val)
+		let tmp = document.querySelector('.test')
 		let qrcodeValue = JSON.parse(val)
+		tmp.innerHTML = qrcodeValue
 		alert(JSON.stringify(val));
 		alert('==== key = [' + qrcodeValue.key + ']');
 		alert('==== url = [' + qrcodeValue.url + ']');
@@ -44,7 +46,7 @@
 
 <body class="gray-bg login_bg_image">
  
-<p>TEST</p>
+<p class="test">TEST</p>
 <input style='height:100px' type="button" value="qrcode111" onClick="openQrcode()"/>
 </body>
 </html:html>
