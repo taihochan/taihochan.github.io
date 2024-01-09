@@ -36,16 +36,7 @@
 		} else {
 			window.laleIm.postMessage(JSON.stringify(command))
 		}  
-	}
-
-    var console = {
-    panel: $(parent.document.body).append('<div>'),
-    log: function(m){
-        this.panel.prepend('<div>'+m+'</div>');
-    }       
-};
-console.log('message');
-		    
+	}   
 	openQrcode(); 
 
 	</script>
