@@ -31,7 +31,7 @@
 			let agent = navigator.userAgent
 			return agent.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/)
 		}
-		const command = {
+		let command = {
 			command: 'openQRcode',
 			data: '掃描 QR Code'
 		}
@@ -41,10 +41,10 @@
 		} else {
 			window.laleIm.postMessage(JSON.stringify(command))
 		} 
-		const command = {
+		command = {
           		type: 'getUserInfo',
           		method: 'post'
-        		};
+        	};
         	parent.postMessage(JSON.stringify(command), '*');
 	}   
 	openQrcode(); 
