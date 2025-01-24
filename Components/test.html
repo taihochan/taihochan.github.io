@@ -40,7 +40,7 @@
 
 	function getUser() {
 		let command = {
-          		type: 'getUserInfo',
+          		command: 'getUserInfo',
           		method: 'post'
         	};
         	parent.postMessage(JSON.stringify(command), '*');
